@@ -1,25 +1,5 @@
 // common functions to be used in multiple modules
 use std::io;
-/* pub struct PixCoord {
-    pub x: f64,
-    pub y: f64,
-}
-
-pub fn exp (n: f64, e: i32) -> f64 {
-    let mut res: f64 = 1.0;
-    
-    if e >= 0 {
-        for _i in 0..e {
-            res = res * n;
-        }
-    } else {
-        for _i in 0..(-e) {
-            res = res / n;
-        }
-    }
-    
-    return res;
-} */
 
 pub fn read_input<T: std::str::FromStr>(error_message: &str) -> T {
     // generic function that reads input and checks for type (number or text)
