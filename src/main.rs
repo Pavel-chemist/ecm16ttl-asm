@@ -3,6 +3,7 @@
 
 mod helpers;
 mod alu;
+mod mem_access;
 
 // declaring functionality of used modules
 use helpers::read_input;
@@ -23,7 +24,15 @@ fn main() {
 fn show_code(machine_instruction: Vec<u16>) {
 
     for i in 0..machine_instruction.len() {
-        println!("word {}: {:#016b} | {:#04X}", i+1, machine_instruction[i], machine_instruction[i]);
+        println!(
+            "word {}: {:04b} {:04b} {:04b} {:04b} | {:04X}",
+            i+1,
+            machine_instruction[i] >> 12,
+            (machine_instruction[i] >> 8) & 0xF,
+            (machine_instruction[i] >> 4) & 0xF,
+            machine_instruction[i] & 0xF,
+            machine_instruction[i],
+        );
     }
 }
 
@@ -60,15 +69,9 @@ fn command_interpreter(command: &str) -> Vec<u16> {
         "ROT" => machine_instruction = alu::rot(command_parts),
         "INV" => machine_instruction = alu::inv(command_parts),
         "BSE" => machine_instruction = alu::bse(command_parts),
-        "LDi" => {
-            println!("load immediate");
-        },
-        "LDd" => {
-            println!("load at direct address");
-        },
-        "STd" => {
-            println!("store at direct address");
-        },
+        "LDi" => machine_instruction = mem_access::ldi(command_parts),
+        "LDd" => machine_instruction = mem_access::ldd(command_parts),
+        "STd" => machine_instruction = mem_access::std(command_parts),
         "LD" => {
             println!("load");
         },
