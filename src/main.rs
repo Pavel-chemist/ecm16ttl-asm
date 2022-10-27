@@ -72,42 +72,18 @@ fn command_interpreter(command: &str) -> Vec<u16> {
         "LDi" => machine_instruction = mem_access::ldi(command_parts),
         "LDd" => machine_instruction = mem_access::ldd(command_parts),
         "STd" => machine_instruction = mem_access::std(command_parts),
-        "LD" => {
-            println!("load");
-        },
-        "ST" => {
-            println!("store");
-        },
-        "J" => {
-            println!("jump (unconditional)");
-        },
-        "JC" => {
-            println!("jump if carry");
-        },
-        "JN" => {
-            println!("jump if negative");
-        },
-        "JO" => {
-            println!("jump if ovrflow");
-        },
-        "JZ" => {
-            println!("jump if zero");
-        },
-        "JNC" => {
-            println!("jump if not carry");
-        },
-        "JNN" => {
-            println!("jump if not negative");
-        },
-        "JNO" => {
-            println!("jump if not overflow");
-        },
-        "JNZ" => {
-            println!("jump if not zero");
-        },
-        "JSR" => {
-            println!("jump to subroutine");
-        },
+        "LD" => machine_instruction = mem_access::ld(command_parts),
+        "ST" => machine_instruction = mem_access::st(command_parts),
+        "J" => machine_instruction = mem_access::jump(command_parts),
+        "JC" => machine_instruction = mem_access::jc(command_parts),
+        "JN" => machine_instruction = mem_access::jn(command_parts),
+        "JO" => machine_instruction = mem_access::jo(command_parts),
+        "JZ" => machine_instruction = mem_access::jz(command_parts),
+        "JNC" => machine_instruction = mem_access::jnc(command_parts),
+        "JNN" => machine_instruction = mem_access::jnn(command_parts),
+        "JNO" => machine_instruction = mem_access::jno(command_parts),
+        "JNZ" => machine_instruction = mem_access::jnz(command_parts),
+        "JSR" => machine_instruction = mem_access::jsr(command_parts),
         _ => {
             println!("undefined");
         }
