@@ -4,6 +4,7 @@
 mod helpers;
 mod alu;
 mod mem_access;
+mod addr_arithmetic;
 
 // declaring functionality of used modules
 use helpers::read_input;
@@ -84,6 +85,7 @@ fn command_interpreter(command: &str) -> Vec<u16> {
         "JNO" => machine_instruction = mem_access::jno(command_parts),
         "JNZ" => machine_instruction = mem_access::jnz(command_parts),
         "JSR" => machine_instruction = mem_access::jsr(command_parts),
+        "ADDp" => machine_instruction = addr_arithmetic::addp(command_parts),
         _ => {
             println!("undefined");
         }
