@@ -6,6 +6,7 @@ mod alu;
 mod mem_access;
 mod addr_arithmetic;
 mod mov;
+mod misc;
 
 // declaring functionality of used modules
 use helpers::read_input;
@@ -77,6 +78,7 @@ fn command_interpreter(command: &str) -> Vec<u16> {
         "LD" => machine_instruction = mem_access::ld(command_parts),
         "ST" => machine_instruction = mem_access::st(command_parts),
         "J" => machine_instruction = mem_access::jump(command_parts),
+        "JUMP" => machine_instruction = mem_access::jump(command_parts), //same as J, only different name
         "JC" => machine_instruction = mem_access::jc(command_parts),
         "JN" => machine_instruction = mem_access::jn(command_parts),
         "JO" => machine_instruction = mem_access::jo(command_parts),
@@ -88,6 +90,14 @@ fn command_interpreter(command: &str) -> Vec<u16> {
         "JSR" => machine_instruction = mem_access::jsr(command_parts),
         "ADDp" => machine_instruction = addr_arithmetic::addp(command_parts),
         "MOV" => machine_instruction = mov::mov(command_parts),
+        "SETIM" => machine_instruction = misc::setim(command_parts),
+        "CLRIM" => machine_instruction = misc::clrim(command_parts),
+        "SETPR" => machine_instruction = misc::setpr(command_parts),
+        "EINT" => machine_instruction = misc::eint(command_parts),
+        "DMA" => machine_instruction = misc::dma(),
+        "RESET" => machine_instruction = misc::reset(),
+        "HLT" => machine_instruction = misc::hlt(),
+        "NOP" => machine_instruction = misc::nop(),
         _ => {
             println!("undefined");
         }
