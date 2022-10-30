@@ -46,6 +46,12 @@ fn show_code(instructions: Vec<u16>) {
             instructions[i],
         );
     }
+
+    println!("\nv2.0 raw");
+
+    for i in 0..instructions.len() {
+        println!("{:04X}", instructions[i]);
+    }
 }
 
 
