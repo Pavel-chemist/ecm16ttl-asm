@@ -113,3 +113,11 @@ pub fn nop() -> Vec<u16> {
 
     return machine_instruction;
 }
+
+pub fn undefined() -> Vec<u16> {
+    let mut machine_instruction: Vec<u16> = Vec::new();
+
+    machine_instruction.push(0x00FF);
+
+    return machine_instruction;
+}

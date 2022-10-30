@@ -6,7 +6,7 @@ mod misc;
 
 pub fn command_interpreter(command: &str) -> Vec<u16> {
   let command_parts: Vec<&str> = command.split_whitespace().collect();
-  let mut machine_instruction: Vec<u16> = Vec::new();
+  let machine_instruction: Vec<u16>;
 
   match command_parts[0] {
       "ADD" => machine_instruction = alu::add(command_parts),
@@ -63,9 +63,7 @@ pub fn command_interpreter(command: &str) -> Vec<u16> {
       "RESET" => machine_instruction = misc::reset(),
       "HLT" => machine_instruction = misc::hlt(),
       "NOP" => machine_instruction = misc::nop(),
-      _ => {
-          println!("undefined");
-      }
+      _ => machine_instruction = misc::undefined(),
   }
 
   return machine_instruction;

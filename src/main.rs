@@ -9,29 +9,41 @@ use helpers::read_input;
 use command_interpreter::command_interpreter;
 
 fn main() {
-    let command: String;
-    let machine_instructions: Vec<u16>;
+    let mut command: String;
+    let mut program: Vec<u16> = Vec::new();
+    let mut machine_instructions: Vec<u16>;
 
-    println!("Enter the asm command:");
+    println!("Enter asm commands:");
 
-    command = read_input("");
+    loop {
+        command = read_input("");
+        if command.len() > 0 {
+            machine_instructions = command_interpreter(&command);
+        
+            if machine_instructions[0] != 0x00FF {
+                for i in 0..machine_instructions.len() {
+                    program.push(machine_instructions[i]);
+                }
+            }
+        } else {
+            break;
+        }
+    }   
 
-    machine_instructions = command_interpreter(&command);
-
-    show_code(machine_instructions);
+    show_code(program);
 }
 
-fn show_code(machine_instruction: Vec<u16>) {
+fn show_code(instructions: Vec<u16>) {
 
-    for i in 0..machine_instruction.len() {
+    for i in 0..instructions.len() {
         println!(
             "word {}: {:04b} {:04b} {:04b} {:04b} | {:04X}",
             i+1,
-            machine_instruction[i] >> 12,
-            (machine_instruction[i] >> 8) & 0xF,
-            (machine_instruction[i] >> 4) & 0xF,
-            machine_instruction[i] & 0xF,
-            machine_instruction[i],
+            instructions[i] >> 12,
+            (instructions[i] >> 8) & 0xF,
+            (instructions[i] >> 4) & 0xF,
+            instructions[i] & 0xF,
+            instructions[i],
         );
     }
 }
