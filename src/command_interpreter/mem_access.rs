@@ -17,8 +17,6 @@ pub fn ldi(command_parts: Vec<&str>) -> Vec<u16> {
         machine_instruction.push((imm_val & 0xFFFF) as u16);
 
         if command_parts[1].chars().nth(0).unwrap_or(' ') == 'r' {
-            println!("immediate load to GPR");
-
             if command_parts[1].chars().nth(1).unwrap_or('0').to_digit(10).unwrap() < 8 {
                 machine_instruction[0] = machine_instruction[0] | ((command_parts[1].chars().nth(1).unwrap().to_digit(10).unwrap() << 8) as u16);
             }
@@ -27,8 +25,6 @@ pub fn ldi(command_parts: Vec<&str>) -> Vec<u16> {
                 println!("Immediate value too big! It will be trimmed to 16bit.");
             }
         } else if command_parts[1] == "PC" || command_parts[1] == "SP" || command_parts[1] == "FP" || command_parts[1] == "BP" {
-            println!("immediate load to MP pair");
-
             match command_parts[1] {
                 "PC" => machine_instruction[0] = machine_instruction[0] | (0b00 << 9),
                 "SP" => machine_instruction[0] = machine_instruction[0] | (0b01 << 9),
