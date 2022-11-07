@@ -1,5 +1,6 @@
 mod alu;
 mod mem_access;
+mod jump;
 mod addr_arithmetic;
 mod mov;
 mod misc;
@@ -42,17 +43,17 @@ pub fn command_interpreter(command: &str) -> Vec<u16> {
       "STd" => machine_instruction = mem_access::std(command_parts),
       "LD" => machine_instruction = mem_access::ld(command_parts),
       "ST" => machine_instruction = mem_access::st(command_parts),
-      "J" => machine_instruction = mem_access::jump(command_parts),
-      "JUMP" => machine_instruction = mem_access::jump(command_parts), //same as J, only different name
-      "JC" => machine_instruction = mem_access::jc(command_parts),
-      "JN" => machine_instruction = mem_access::jn(command_parts),
-      "JO" => machine_instruction = mem_access::jo(command_parts),
-      "JZ" => machine_instruction = mem_access::jz(command_parts),
-      "JNC" => machine_instruction = mem_access::jnc(command_parts),
-      "JNN" => machine_instruction = mem_access::jnn(command_parts),
-      "JNO" => machine_instruction = mem_access::jno(command_parts),
-      "JNZ" => machine_instruction = mem_access::jnz(command_parts),
-      "JSR" => machine_instruction = mem_access::jsr(command_parts),
+      "J" => machine_instruction = jump::jump(command_parts),
+      "JMP" => machine_instruction = jump::jump(command_parts), //same as J, only different name
+      "JC" => machine_instruction = jump::jc(command_parts),
+      "JN" => machine_instruction = jump::jn(command_parts),
+      "JO" => machine_instruction = jump::jo(command_parts),
+      "JZ" => machine_instruction = jump::jz(command_parts),
+      "JNC" => machine_instruction = jump::jnc(command_parts),
+      "JNN" => machine_instruction = jump::jnn(command_parts),
+      "JNO" => machine_instruction = jump::jno(command_parts),
+      "JNZ" => machine_instruction = jump::jnz(command_parts),
+      "JSR" => machine_instruction = jump::jsr(command_parts),
       "ADDp" => machine_instruction = addr_arithmetic::addp(command_parts),
       "MOV" => machine_instruction = mov::mov(command_parts),
       "SETIM" => machine_instruction = misc::setim(command_parts),

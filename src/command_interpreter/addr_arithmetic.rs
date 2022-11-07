@@ -20,7 +20,7 @@ pub fn addp(command_parts: Vec<&str>) -> Vec<u16> {
                 if const_value < 256 {
                     machine_instruction[0] = machine_instruction[0] | const_value | 0x0100;
                 } else {
-                    machine_instruction[0] = machine_instruction[0] | 0x0010;
+                    machine_instruction[0] = machine_instruction[0] | 0x0004;
 
                     machine_instruction.push(const_value);
                 }

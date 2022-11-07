@@ -87,85 +87,7 @@ pub fn st(command_parts: Vec<&str>) -> Vec<u16> {
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-pub fn jump(command_parts: Vec<&str>) -> Vec<u16> {
-    let mut machine_instruction: Vec<u16> = Vec::new();
-    
-    machine_instruction.push(0x1000);
 
-    return jump_mem_access_decode(command_parts, machine_instruction);
-}
-
-pub fn jz(command_parts: Vec<&str>) -> Vec<u16> {
-    let mut machine_instruction: Vec<u16> = Vec::new();
-    
-    machine_instruction.push(0x1100);
-
-    return jump_mem_access_decode(command_parts, machine_instruction);
-}
-
-pub fn jn(command_parts: Vec<&str>) -> Vec<u16> {
-    let mut machine_instruction: Vec<u16> = Vec::new();
-    
-    machine_instruction.push(0x1200);
-
-    return jump_mem_access_decode(command_parts, machine_instruction);
-}
-
-pub fn jo(command_parts: Vec<&str>) -> Vec<u16> {
-    let mut machine_instruction: Vec<u16> = Vec::new();
-    
-    machine_instruction.push(0x1400);
-
-    return jump_mem_access_decode(command_parts, machine_instruction);
-}
-
-pub fn jc(command_parts: Vec<&str>) -> Vec<u16> {
-    let mut machine_instruction: Vec<u16> = Vec::new();
-    
-    machine_instruction.push(0x1800);
-
-    return jump_mem_access_decode(command_parts, machine_instruction);
-}
-
-pub fn jnz(command_parts: Vec<&str>) -> Vec<u16> {
-    let mut machine_instruction: Vec<u16> = Vec::new();
-    
-    machine_instruction.push(0x1E00);
-
-    return jump_mem_access_decode(command_parts, machine_instruction);
-}
-
-pub fn jnn(command_parts: Vec<&str>) -> Vec<u16> {
-    let mut machine_instruction: Vec<u16> = Vec::new();
-    
-    machine_instruction.push(0x1D00);
-
-    return jump_mem_access_decode(command_parts, machine_instruction);
-}
-
-pub fn jno(command_parts: Vec<&str>) -> Vec<u16> {
-    let mut machine_instruction: Vec<u16> = Vec::new();
-    
-    machine_instruction.push(0x1B00);
-
-    return jump_mem_access_decode(command_parts, machine_instruction);
-}
-
-pub fn jnc(command_parts: Vec<&str>) -> Vec<u16> {
-    let mut machine_instruction: Vec<u16> = Vec::new();
-    
-    machine_instruction.push(0x1700);
-
-    return jump_mem_access_decode(command_parts, machine_instruction);
-}
-
-pub fn jsr(command_parts: Vec<&str>) -> Vec<u16> {
-    let mut machine_instruction: Vec<u16> = Vec::new();
-    
-    machine_instruction.push(0x1F00);
-
-    return jump_mem_access_decode(command_parts, machine_instruction);
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -242,7 +164,7 @@ fn indirect_access_decode(command_parts: Vec<&str>, mut machine_instruction: Vec
     return machine_instruction;
 }
 
-fn jump_mem_access_decode(command_parts: Vec<&str>, mut machine_instruction: Vec<u16>) -> Vec<u16> {
+/* fn jump_mem_access_decode(command_parts: Vec<&str>, mut machine_instruction: Vec<u16>) -> Vec<u16> {
     let mem_pointer: u16;
     let offset: Vec<u16>;
 
@@ -276,7 +198,7 @@ fn jump_mem_access_decode(command_parts: Vec<&str>, mut machine_instruction: Vec
     }
 
     return machine_instruction;
-}
+} */
 
 fn check_address_in_parentheses(address_part: &str) -> bool {
     return address_part.chars().nth(0).unwrap() == '(' && address_part.chars().nth(address_part.len() - 1).unwrap() == ')';
