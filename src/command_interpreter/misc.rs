@@ -71,7 +71,7 @@ pub fn eint(command_parts: Vec<&str>) -> Vec<u16> {
         interrupt_number = command_parts[1].parse::<u16>().unwrap_or_default();
         
         if interrupt_number < 256 {
-            machine_instruction[0] = machine_instruction[0] | (interrupt_number << 5);
+            machine_instruction[0] = machine_instruction[0] | interrupt_number;
         } else {
             println!("EINT error: Interrupt number should be in range 0..255, defaulting to 0.");    
         }

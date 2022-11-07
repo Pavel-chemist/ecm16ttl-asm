@@ -61,7 +61,7 @@ pub fn command_interpreter(command: &str) -> Vec<u16> {
       "SETPR" => machine_instruction = misc::setpr(command_parts),
       "EINT" => machine_instruction = misc::eint(command_parts),
       "DMA" => machine_instruction = misc::dma(),
-      "RESET" => machine_instruction = misc::reset(),
+      "RST" => machine_instruction = misc::reset(),
       "HLT" => machine_instruction = misc::hlt(),
       "NOP" => machine_instruction = misc::nop(),
       _ => machine_instruction = misc::undefined(),
