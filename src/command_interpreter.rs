@@ -5,7 +5,7 @@ mod addr_arithmetic;
 mod mov;
 mod misc;
 
-pub fn command_interpreter(command: &str) -> Vec<u16> {
+pub fn interpret(command: &str) -> Vec<u16> {
   let command_parts: Vec<&str> = command.split_whitespace().collect();
   let machine_instruction: Vec<u16>;
 
