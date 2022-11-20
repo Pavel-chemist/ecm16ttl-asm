@@ -1,3 +1,5 @@
+use crate::helpers;
+
 pub fn addp(command_parts: Vec<&str>) -> Vec<u16> {
     let mut machine_instruction: Vec<u16> = Vec::new();
     let mem_pointer: u16;
@@ -15,7 +17,7 @@ pub fn addp(command_parts: Vec<&str>) -> Vec<u16> {
             gpr = gpr_matcher(command_parts[2]);
 
             if gpr == 0xFFFF {
-                const_value = command_parts[2].parse::<u16>().unwrap_or_default();
+                const_value = helpers::number_parser(command_parts[2]) as u16;
 
                 if const_value < 256 {
                     machine_instruction[0] = machine_instruction[0] | const_value | 0x0100;

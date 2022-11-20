@@ -5,7 +5,7 @@ mod helpers;
 mod command_interpreter;
 
 // declaring functionality of used modules
-use helpers::read_input;
+// use helpers::{read_input, number_parser};
 use command_interpreter::command_interpreter;
 
 fn main() {
@@ -16,9 +16,12 @@ fn main() {
     println!("Enter asm commands:");
 
     loop {
-        command = read_input("");
+        command = helpers::read_input("");
         if command.len() > 0 {
+
             machine_instructions = command_interpreter(&command);
+
+            // println!("number is {:X}", helpers::number_parser(&command) as u16);
         
             if machine_instructions[0] != 0x00FF {
                 for i in 0..machine_instructions.len() {

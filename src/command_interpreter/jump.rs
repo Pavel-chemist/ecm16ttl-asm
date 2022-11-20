@@ -1,3 +1,5 @@
+use crate::helpers;
+
 pub fn jump(command_parts: Vec<&str>) -> Vec<u16> {
     let mut machine_instruction: Vec<u16> = Vec::new();
     
@@ -163,7 +165,8 @@ fn offset_value_decode(offset_part: &str, mut offset_values: Vec<u16>) -> Vec<u1
     } else {
         offset_values[0] = offset_values[0] | 0x0004;
 
-        offset_values.push(offset_string.parse::<u16>().unwrap_or_default());
+        offset_values.push(helpers::number_parser(offset_string) as u16);
+
     }
 
     return offset_values;

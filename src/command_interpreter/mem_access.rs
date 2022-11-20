@@ -1,3 +1,5 @@
+use crate::helpers;
+
 enum Incr {
     Pre,
     Post,
@@ -12,7 +14,7 @@ pub fn ldi(command_parts: Vec<&str>) -> Vec<u16> {
     machine_instruction.push(0x2000);
 
     if command_parts.len() > 2 {
-        imm_val = command_parts[2].parse::<u32>().unwrap_or_default();
+        imm_val = helpers::number_parser(command_parts[2]) as u32;
 
         machine_instruction.push((imm_val & 0xFFFF) as u16);
 
@@ -97,7 +99,8 @@ fn direct_address(command_parts: Vec<&str>, mut machine_instruction: Vec<u16>) -
 
     if command_parts.len() > 2 {
         if check_address_in_parentheses(command_parts[2]) {
-            address = command_parts[2][1..(command_parts[2].len()-1)].parse::<u32>().unwrap_or_default() >> 1;
+            let value_in_parentheses: &str = &command_parts[2][1..(command_parts[2].len()-1)];
+            address = (helpers::number_parser(value_in_parentheses) as u32) >> 1;
         } else {
             println!("Direct Address Memory Access instruction error:\nDirect address should be in parentheses!");
             address = 0;
@@ -163,42 +166,6 @@ fn indirect_access_decode(command_parts: Vec<&str>, mut machine_instruction: Vec
 
     return machine_instruction;
 }
-
-/* fn jump_mem_access_decode(command_parts: Vec<&str>, mut machine_instruction: Vec<u16>) -> Vec<u16> {
-    let mem_pointer: u16;
-    let offset: Vec<u16>;
-
-    match command_parts.len() {
-        1 => {
-            println!("Indirect mem access error: No operands provided");
-        },
-        2 => {
-            mem_pointer = mem_pointer_matcher(command_parts[1]);
-
-            if mem_pointer != 0xFFFF {
-                machine_instruction[0] = machine_instruction[0] | mem_pointer;
-            } else {
-                println!("Indirect mem access error: wrong mem_pointer");
-            }
-        },
-        _ => {
-            mem_pointer = mem_pointer_matcher(command_parts[1]);
-            offset = interpret_offset(command_parts[2]);
-
-            if mem_pointer != 0xFFFF {
-                machine_instruction[0] = machine_instruction[0] | mem_pointer | offset[0];
-
-                if offset.len() > 1 {
-                    machine_instruction.push(offset[1]);
-                }
-            } else {
-                println!("Indirect mem access error: wrong mem_pointer");
-            }
-        },
-    }
-
-    return machine_instruction;
-} */
 
 fn check_address_in_parentheses(address_part: &str) -> bool {
     return address_part.chars().nth(0).unwrap() == '(' && address_part.chars().nth(address_part.len() - 1).unwrap() == ')';
@@ -308,11 +275,7 @@ fn offset_value_decode(offset_part: &str, mut offset_values: Vec<u16>, pre_post:
     } else {
         offset_values[0] = offset_values[0] | 0x0004;
 
-        offset_values.push(offset_string.parse::<u16>().unwrap_or_default());
-
-        if offset_values[1] == 0x0000 {
-            println!("Offset value decode warning: Value might be out of i16 range or malformed; defaulting to 0");
-        }
+        offset_values.push(helpers::number_parser(offset_string) as u16);
     }
 
     return offset_values;

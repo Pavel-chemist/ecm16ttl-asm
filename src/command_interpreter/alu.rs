@@ -1,3 +1,5 @@
+use crate::helpers;
+
 pub fn add(command_parts: Vec<&str>) -> Vec<u16> {
     let mut machine_instruction: Vec<u16> = Vec::new();
     machine_instruction.push(0x8000);
@@ -360,7 +362,7 @@ pub fn rot(mut command_parts: Vec<&str>) -> Vec<u16> {
         if command_parts[3].chars().nth(0).unwrap_or(' ') == 'r' {
             machine_instruction[0] = alu_op_three_operands(command_parts, machine_instruction[0]);
         } else {
-            let rotation_number: u16 = command_parts[3].parse::<u16>().unwrap_or_default() & 0xF;
+            let rotation_number: u16 = (helpers::number_parser(command_parts[3]) as u16) & 0xF;
 
             command_parts[3] = "r0";
             machine_instruction[0] = alu_op_three_operands(command_parts, machine_instruction[0]);
@@ -450,7 +452,8 @@ fn alu_op_with_const (command_parts: Vec<&str>, mut machine_instruction: u16) ->
             println!("1-operand immediate ALU instruction error: Incorrect name for operand 1");
         }
 
-        machine_instruction = machine_instruction | command_parts[2].parse::<u8>().unwrap_or_default() as u16;
+        // machine_instruction = machine_instruction | command_parts[2].parse::<u8>().unwrap_or_default() as u16;
+        machine_instruction = machine_instruction | (helpers::number_parser(command_parts[2]) as u16 & 0x00FF);
     } else {
         println!("1-operand immediate ALU instruction error: missing operand(s)");
     }

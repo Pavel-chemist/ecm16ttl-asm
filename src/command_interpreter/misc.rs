@@ -1,3 +1,5 @@
+use crate::helpers;
+
 pub fn setim(command_parts: Vec<&str>) -> Vec<u16> {
     let mut machine_instruction: Vec<u16> = Vec::new();
     let mask_number: u16;
@@ -5,7 +7,7 @@ pub fn setim(command_parts: Vec<&str>) -> Vec<u16> {
     machine_instruction.push(0x0700);
 
     if command_parts.len() > 1 {
-        mask_number = command_parts[1].parse::<u16>().unwrap_or_default();
+        mask_number = helpers::number_parser(command_parts[1]) as u16;
         
         if mask_number < 8 {
             machine_instruction[0] = machine_instruction[0] | (mask_number << 5);
@@ -26,7 +28,7 @@ pub fn clrim(command_parts: Vec<&str>) -> Vec<u16> {
     machine_instruction.push(0x0600);
 
     if command_parts.len() > 1 {
-        mask_number = command_parts[1].parse::<u16>().unwrap_or_default();
+        mask_number = helpers::number_parser(command_parts[1]) as u16;
         
         if mask_number < 8 {
             machine_instruction[0] = machine_instruction[0] | (mask_number << 5);
@@ -47,7 +49,7 @@ pub fn setpr(command_parts: Vec<&str>) -> Vec<u16> {
     machine_instruction.push(0x0500);
 
     if command_parts.len() > 1 {
-        prefix_number = command_parts[1].parse::<u16>().unwrap_or_default();
+        prefix_number = helpers::number_parser(command_parts[1]) as u16;
         
         if prefix_number < 8 {
             machine_instruction[0] = machine_instruction[0] | (prefix_number << 5);
@@ -68,7 +70,7 @@ pub fn eint(command_parts: Vec<&str>) -> Vec<u16> {
     machine_instruction.push(0x0400);
 
     if command_parts.len() > 1 {
-        interrupt_number = command_parts[1].parse::<u16>().unwrap_or_default();
+        interrupt_number = helpers::number_parser(command_parts[1]) as u16;
         
         if interrupt_number < 256 {
             machine_instruction[0] = machine_instruction[0] | interrupt_number;
