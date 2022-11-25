@@ -87,6 +87,102 @@ pub fn st(command_parts: Vec<&str>) -> Vec<u16> {
     return indirect_access_decode(command_parts, machine_instruction);
 }
 
+pub fn ldo(command_parts: Vec<&str>) -> Vec<u16> {
+    let mut machine_instruction: Vec<u16> = Vec::new();
+    
+    machine_instruction.push(0x6000);
+
+    return indirect_access_decode(command_parts, machine_instruction);
+}
+
+pub fn sto(command_parts: Vec<&str>) -> Vec<u16> {
+    let mut machine_instruction: Vec<u16> = Vec::new();
+    
+    machine_instruction.push(0x7000);
+
+    return indirect_access_decode(command_parts, machine_instruction);
+}
+
+pub fn ldr(command_parts: Vec<&str>) -> Vec<u16> {
+    let mut machine_instruction: Vec<u16> = Vec::new();
+    
+    machine_instruction.push(0x6000);
+
+    return indirect_access_decode(command_parts, machine_instruction);
+}
+
+pub fn str(command_parts: Vec<&str>) -> Vec<u16> {
+    let mut machine_instruction: Vec<u16> = Vec::new();
+    
+    machine_instruction.push(0x7000);
+
+    return indirect_access_decode(command_parts, machine_instruction);
+}
+
+pub fn ldoa(command_parts: Vec<&str>) -> Vec<u16> {
+    let mut machine_instruction: Vec<u16> = Vec::new();
+    
+    machine_instruction.push(0x6000);
+
+    return indirect_access_decode(command_parts, machine_instruction);
+}
+
+pub fn stoa(command_parts: Vec<&str>) -> Vec<u16> {
+    let mut machine_instruction: Vec<u16> = Vec::new();
+    
+    machine_instruction.push(0x7000);
+
+    return indirect_access_decode(command_parts, machine_instruction);
+}
+
+pub fn ldra(command_parts: Vec<&str>) -> Vec<u16> {
+    let mut machine_instruction: Vec<u16> = Vec::new();
+    
+    machine_instruction.push(0x6000);
+
+    return indirect_access_decode(command_parts, machine_instruction);
+}
+
+pub fn stra(command_parts: Vec<&str>) -> Vec<u16> {
+    let mut machine_instruction: Vec<u16> = Vec::new();
+    
+    machine_instruction.push(0x7000);
+
+    return indirect_access_decode(command_parts, machine_instruction);
+}
+
+pub fn ldob(command_parts: Vec<&str>) -> Vec<u16> {
+    let mut machine_instruction: Vec<u16> = Vec::new();
+    
+    machine_instruction.push(0x6000);
+
+    return indirect_access_decode(command_parts, machine_instruction);
+}
+
+pub fn stob(command_parts: Vec<&str>) -> Vec<u16> {
+    let mut machine_instruction: Vec<u16> = Vec::new();
+    
+    machine_instruction.push(0x7000);
+
+    return indirect_access_decode(command_parts, machine_instruction);
+}
+
+pub fn ldrb(command_parts: Vec<&str>) -> Vec<u16> {
+    let mut machine_instruction: Vec<u16> = Vec::new();
+    
+    machine_instruction.push(0x6000);
+
+    return indirect_access_decode(command_parts, machine_instruction);
+}
+
+pub fn strb(command_parts: Vec<&str>) -> Vec<u16> {
+    let mut machine_instruction: Vec<u16> = Vec::new();
+    
+    machine_instruction.push(0x7000);
+
+    return indirect_access_decode(command_parts, machine_instruction);
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////
 
 

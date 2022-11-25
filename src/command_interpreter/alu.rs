@@ -10,20 +10,6 @@ pub fn add(command_parts: Vec<&str>) -> Vec<u16> {
         println!("ADD instruction error: no operands provided");
     }
 
-    /* if command_parts.len() > 1 {
-        if command_parts[1].chars().nth(0).unwrap_or(' ') == 'r' {
-            machine_instruction[0] = machine_instruction[0] | 0x8000; 
-    
-            machine_instruction[0] = alu_op_three_operands(command_parts, machine_instruction[0])
-        } else if command_parts[1] == "PC" || command_parts[1] == "SP" || command_parts[1] == "FP" || command_parts[1] == "BP" {
-            println!("MemPointer arithmetic op -- TBD");
-        } else {
-            println!("ADD instruction error: wrong first operand");
-        }
-    } else {
-        println!("ADD instruction error: no operands provided");
-    } */
-
     return machine_instruction;
 }
 
@@ -404,7 +390,7 @@ pub fn bse (mut command_parts: Vec<&str>) -> Vec<u16> {
         command_parts[3] = "r0";
         machine_instruction[0] = alu_op_three_operands(command_parts, machine_instruction[0]);
     } else {
-        println!("INV instruction error: some operands missing");
+        println!("BSE instruction error: some operands missing");
     }
 
     return machine_instruction;
