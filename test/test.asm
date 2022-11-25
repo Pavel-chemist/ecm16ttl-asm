@@ -1,2 +1,11 @@
-ADDi r1 0x1F
-LD r2 (SP) [-16]
+.const
+    input_address = 0x0010
+
+.text
+    LDd r1 input_address
+    ADDi r1 number          #adds number to register r1
+
+.data
+    number: .word 0x1F
+
+
