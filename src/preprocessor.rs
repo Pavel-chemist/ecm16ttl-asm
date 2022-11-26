@@ -118,79 +118,86 @@ encode code lines into machine instructions, with look-up in "labels" and "const
 
 */
 
-use std::collections::HashMap;
+// use std::collections::HashMap;
+mod data_line_parser;
+mod const_line_parser;
+mod text_line_parser;
 
-use crate::structs::{Code, Label, InstrDescr};
-use crate::lut;
+use crate::structs::{Code, Label};
 use crate::enums::Segment;
+use data_line_parser::parse_data_line;
+use const_line_parser::parse_constants_line;
+use text_line_parser::parse_text_line;
+
+
 
 pub fn first_read(raw_lines: Vec<&str>, labels_table: &mut Vec<Label>) -> Vec<Code> {
-    let instructions_lut: HashMap<&str, InstrDescr> = lut::get_instr_table(); 
 
     let mut code_table: Vec<Code> = Vec::new();
     let mut address_counter: i32 = 0;
-
-    let mut is_label: bool = false;
     let mut segment: Segment = Segment::None;
 
     for i in 0..raw_lines.len() {
-        let words: Vec<&str> = raw_lines[i].split_whitespace().collect();
-        let mut code_line: Code = Code::new(i as i32, raw_lines[i]);
+        let raw_line: String = String::from(raw_lines[i]); //copy line for scoping reasons
 
-        if words.len() > 0 {
+        let words: Vec<&str> = raw_line.split_whitespace().collect();
+        let comment_index: usize = find_comment_start_index(&words);
+        let mut code_line: Code = Code::new((i + 1) as i32, &raw_line);
+
+        if comment_index > 0 {
             match words[0] {
                 ".const" => { segment = Segment::Const },
                 ".text" => { segment = Segment::Text },
                 ".data" => { segment = Segment::Data },
-                _ => {},
+                _ => {
+                    match segment {
+                        Segment::Const => {
+                            parse_constants_line(
+                                i,
+                                words,
+                                comment_index,
+                                labels_table);
+                        },
+                        Segment::Text => {
+                            address_counter = parse_text_line(
+                                i,
+                                words,
+                                comment_index,
+                                address_counter,
+                                labels_table,
+                                &mut code_line)
+                        },
+                        Segment::Data => {
+                            address_counter = parse_data_line(
+                                i,
+                                words,
+                                comment_index,
+                                address_counter,
+                                labels_table,
+                                &mut code_line)
+                        },
+                        _ => {},
+                    }
+                },
             }
         }
 
-        match segment {
-            Segment::Const => parse_constants_line(&words, labels_table),
-            Segment::Text => parse_text_line(&words, labels_table, &mut code_line),
-            Segment::Data => parse_data_line(&words, labels_table, &mut code_line),
-            _ => {},
-        }
-
-
-/*         is_label = words[0].chars().last().unwrap_or('_') == ':';
-
-        if is_label {
-            instr_index = 1;
-            // let 
-            // labels_table.push()
-        } else {
-            instr_index = 0;
-        }
- */
-
-        match instructions_lut.get(words[0]) {
-            Some(idescr) => println!("Instruction {} is of {} type", words[0], idescr.itype),
-            None => println!("instruction {} is unknown.", words[0]),    
-        };
-        
-    }
-
-    println!("lines: ");
-    
-    for i in 0..raw_lines.len() {
-        println!("{}", raw_lines[i]);
+        code_table.push(code_line);
     }
 
     return code_table;
 }
 
-fn parse_constants_line(code_line: &Vec<&str>, labels_table: &mut Vec<Label>) {
-    //push found constants to labels table
-}
+fn find_comment_start_index(code_line: &Vec<&str>) -> usize{
+    let mut index: usize = 0;
 
-fn parse_text_line(code_line: &Vec<&str>, labels_table: &mut Vec<Label>, listing_line: &mut Code) {
-    //push found labels to labels table
-    //if found code, update listing_line
-}
+    for i in 0..code_line.len() {
+        if code_line[i].chars().nth(0).unwrap() == '#' {
+            break;
+        }
 
-fn parse_data_line(code_line: &Vec<&str>, labels_table: &mut Vec<Label>, listing_line: &mut Code) {
-    //push found labels to labels table
-    //if found variable directive and also variable value, update listing_line
+        index = i + 1;
+    }
+
+    return index;
 }

@@ -22,7 +22,7 @@ fn main() {
     let mut machine_instructions: Vec<u16>;
     let file_path: String;
     let file_contents: String;
-    let mut code_lines: Vec<&str> = Vec::new();
+    // let mut code_lines: Vec<&str> = Vec::new();
     let mut labels_table: Vec<structs::Label> = Vec::new();
     let mut code_listing: Vec<structs::Code> = Vec::new();
 
@@ -43,18 +43,41 @@ fn main() {
                 code_listing = preprocessor::first_read(file_contents.lines().collect(), &mut labels_table);
             }
         };
-    
-        /* for i in 0..code_lines.len() {
-            machine_instructions = interpret(code_lines[i]);
-            
-            if machine_instructions[0] != 0x00FF {
-                for i in 0..machine_instructions.len() {
-                    program.push(machine_instructions[i]);
-                }
-            }
-        } */
 
-        println!("");
+        println!("\n--------------------------------------------------------------------------------\n");
+        println!("Found labels:\n");
+
+        for i in 0..labels_table.len() {
+            println!("label: \"{}\", value: 0x{:04X} ({})", labels_table[i].label, labels_table[i].address, labels_table[i].address);
+
+        }
+
+        println!("\n--------------------------------------------------------------------------------\n");
+        println!("Full listing:\n");
+        println!("line\taddress\tword\t  original line\n");
+
+        for i in 0..code_listing.len() {
+            let address: String;
+            let machine_code: String;
+
+            if code_listing[i].is_instruction || code_listing[i].is_variable {
+                address = format!("{:04X}", code_listing[i].address);
+
+                if code_listing[i].machine_code.len() != 0 {
+                    machine_code = format!("{:04X}", code_listing[i].machine_code[0]);
+                } else {
+                    machine_code = String::from("0000");    
+                }
+            } else {
+                address = String::from("");
+                machine_code = String::from("");
+            }
+
+            println!("{:04}\t  {}\t{}\t  {}", code_listing[i].line_number, address, machine_code, code_listing[i].original_line);
+        }
+        
+
+        
     } else {
         println!("Enter asm commands:");
 

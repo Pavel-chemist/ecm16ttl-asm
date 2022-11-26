@@ -123,7 +123,7 @@ pub fn number_parser(input_string: &str) -> i32 {
                     }
                 }
             } else {
-                println!("Not a number!");
+                println!("Not a number! Defaulting to 0");
             }
 
         },
