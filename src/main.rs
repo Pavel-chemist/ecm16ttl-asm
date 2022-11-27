@@ -8,10 +8,14 @@ mod enums;
 mod lut;
 mod preprocessor;
 mod command_interpreter;
+mod encoder;
 
 // declaring functionality of used modules
 // use helpers::{read_input, number_parser};
 use command_interpreter::interpret;
+use encoder::encode;
+
+use crate::enums::LineType;
 
 
 
@@ -41,6 +45,8 @@ fn main() {
                 file_contents = buff;
     
                 code_listing = preprocessor::first_read(file_contents.lines().collect(), &mut labels_table);
+
+                encode(&mut code_listing, &labels_table);
             }
         };
 
@@ -57,23 +63,35 @@ fn main() {
         println!("line\taddress\tword\t  original line\n");
 
         for i in 0..code_listing.len() {
-            let address: String;
-            let machine_code: String;
+            let mut address: String;
+            let mut machine_code: String;
 
-            if code_listing[i].is_instruction || code_listing[i].is_variable {
-                address = format!("{:04X}", code_listing[i].address);
+            match code_listing[i].line_type {
+                LineType::Untyped => {
+                    address = String::from("");
+                    machine_code = String::from("");    
+                },
+                _ => {
+                    address = format!("{:04X}", code_listing[i].address);
 
-                if code_listing[i].machine_code.len() != 0 {
-                    machine_code = format!("{:04X}", code_listing[i].machine_code[0]);
-                } else {
-                    machine_code = String::from("0000");    
+                    if code_listing[i].machine_code.len() != 0 {
+                        machine_code = format!("{:04X}", code_listing[i].machine_code[0]);
+                    } else {
+                        machine_code = String::from("0000");    
+                    }    
                 }
-            } else {
-                address = String::from("");
-                machine_code = String::from("");
             }
 
             println!("{:04}\t  {}\t{}\t  {}", code_listing[i].line_number, address, machine_code, code_listing[i].original_line);
+
+            if code_listing[i].machine_code.len() > 1 {
+                for j in 1..code_listing[i].machine_code.len() {
+                    machine_code = format!("{:04X}", code_listing[i].machine_code[j]);
+                    address = format!("{:04X}", (code_listing[i].address + (j as i32) * 2));
+
+                    println!("{}\t  {}\t{}\t  {}", "", address, machine_code, "");
+                }
+            }
         }
         
 

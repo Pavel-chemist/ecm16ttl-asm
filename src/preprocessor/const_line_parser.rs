@@ -11,7 +11,7 @@ pub fn parse_constants_line(
   if code_length != (3 as usize) {
       println!("\nConstants segment error:\nOn line {} part of constant definition is missing or there are extra parts.\nexpected to look like this:\n const_name = <numeric_value>", line_number);
   } else {
-      let value: i32 = number_parser(code_line[2]);
+      let value: i32 = number_parser(code_line[2]) as i32;
 
       if code_line[1] == "=" {
           let const_name: String = String::from(code_line[0]);

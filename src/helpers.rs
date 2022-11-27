@@ -1,6 +1,9 @@
 // common functions to be used in multiple modules
 use std::io;
 
+use crate::structs::Arg;
+use crate::enums::ArgType;
+
 pub fn read_input<T: std::str::FromStr>(error_message: &str) -> T {
     // generic function that reads input and checks for type (number or text)
     // the error handling should be here
@@ -37,11 +40,11 @@ pub fn read_input<T: std::str::FromStr>(error_message: &str) -> T {
     return result;
 }
 
-pub fn number_parser(input_string: &str) -> i32 {
+pub fn number_parser(input_string: &str) -> i64 {
     //this should interpret decimal, binary and hex strings, in the most primitive way
 
     let char_array: Vec<char> = input_string.chars().collect();
-    let mut parsed_number: i32 = 0;
+    let mut parsed_number: i64 = 0;
 
     match char_array.len() {
         0 => {
@@ -137,8 +140,8 @@ fn is_decimal(d: char) -> bool {
     return d == '1' || d == '2' || d == '3'  || d == '4' || d == '5' || d == '6' || d == '7' || d == '8' || d == '9' || d == '-';
 }
 
-fn decimal_parser(digit: char) -> i32 {
-    let mut parsed_number: i32 = 0;
+fn decimal_parser(digit: char) -> i64 {
+    let mut parsed_number: i64 = 0;
 
     match digit {
         '0' => parsed_number = 0,
@@ -157,8 +160,8 @@ fn decimal_parser(digit: char) -> i32 {
     return parsed_number;
 }
 
-fn hex_parser(digit: char) -> i32 {
-    let mut parsed_number: i32 = 0;
+fn hex_parser(digit: char) -> i64 {
+    let mut parsed_number: i64 = 0;
 
     match digit {
         '0' => parsed_number = 0,
@@ -187,4 +190,43 @@ fn hex_parser(digit: char) -> i32 {
     }
 
     return parsed_number;
+}
+
+pub fn register_matcher(arg_name: &str) -> Arg {
+    match arg_name {
+        "r0" => Arg::new(ArgType::Gpr, 0),
+        "r1" => Arg::new(ArgType::Gpr, 1),
+        "r2" => Arg::new(ArgType::Gpr, 2),
+        "r3" => Arg::new(ArgType::Gpr, 3),
+        "r4" => Arg::new(ArgType::Gpr, 4),
+        "r5" => Arg::new(ArgType::Gpr, 5),
+        "r6" => Arg::new(ArgType::Gpr, 6),
+        "r7" => Arg::new(ArgType::Gpr, 7),
+        "mp0" => Arg::new(ArgType::Mpr, 0),
+        "mp1" => Arg::new(ArgType::Mpr, 1),
+        "mp2" => Arg::new(ArgType::Mpr, 2),
+        "mp3" => Arg::new(ArgType::Mpr, 3),
+        "mp4" => Arg::new(ArgType::Mpr, 4),
+        "mp5" => Arg::new(ArgType::Mpr, 5),
+        "mp6" => Arg::new(ArgType::Mpr, 6),
+        "mp7" => Arg::new(ArgType::Mpr, 7),
+        "PCH" => Arg::new(ArgType::Mpr, 0),
+        "PCL" => Arg::new(ArgType::Mpr, 1),
+        "SPH" => Arg::new(ArgType::Mpr, 2),
+        "SPL" => Arg::new(ArgType::Mpr, 3),
+        "FPH" => Arg::new(ArgType::Mpr, 4),
+        "FPL" => Arg::new(ArgType::Mpr, 5),
+        "BPH" => Arg::new(ArgType::Mpr, 6),
+        "BPL" => Arg::new(ArgType::Mpr, 7),
+        "PC" => Arg::new(ArgType::MP, 0),
+        "SP" => Arg::new(ArgType::MP, 1),
+        "FP" => Arg::new(ArgType::MP, 2),
+        "BP" => Arg::new(ArgType::MP, 3),
+        "SR" => Arg::new(ArgType::Special, 1),
+        "MDB" => Arg::new(ArgType::Special, 2),
+        "IVB" => Arg::new(ArgType::Special, 3),
+        _ => Arg::new(ArgType::Value, 0),
+    }   
+
+
 }

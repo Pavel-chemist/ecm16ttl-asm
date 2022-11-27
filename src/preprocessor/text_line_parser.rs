@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use crate::enums::LineType;
 use crate::structs::{Code, Label, InstrDescr};
 use crate::lut::get_instr_table;
 
@@ -42,7 +43,7 @@ pub fn parse_text_line(
                     new_address = prev_address + instr.bytes;
                     
                     listing_line.address = prev_address;
-                    listing_line.is_instruction = true;
+                    listing_line.line_type = LineType::Instruction;
                     listing_line.code_parts.push(String::from(instr_name));
 
                     for i in 0..instr.args {

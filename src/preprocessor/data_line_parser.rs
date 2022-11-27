@@ -1,4 +1,4 @@
-use crate::structs::{Code, Label};
+use crate::{structs::{Code, Label}, enums::{LineType, VarType}};
 
 
 pub fn parse_data_line(
@@ -29,23 +29,12 @@ pub fn parse_data_line(
 
     if size_directive_index < code_length {
         match code_line[size_directive_index] {
-            /* ".byte" => {
-                new_address = prev_address + 1;
-    
-                listing_line.is_variable = true;
-                listing_line.address = prev_address;
-    
-                if code_line.len() > size_directive_index {
-                    listing_line.code_parts.push(String::from(code_line[size_directive_index + 1]));
-                } else {
-                    listing_line.code_parts.push(String::from("0x00"));
-                }
-            }, */
             ".word" => {
                 new_address = prev_address + 2 + (prev_address & 0x1);
     
-                listing_line.is_variable = true;
+                listing_line.line_type = LineType::Variable;
                 listing_line.address = prev_address + (prev_address & 0x1);
+                listing_line.var_type = VarType::Word;
     
                 if code_line.len() > size_directive_index {
                     listing_line.code_parts.push(String::from(code_line[size_directive_index + 1]));
@@ -56,8 +45,9 @@ pub fn parse_data_line(
             ".dword" => {
                 new_address = prev_address + 4 + (prev_address & 0x1);
     
-                listing_line.is_variable = true;
+                listing_line.line_type = LineType::Variable;
                 listing_line.address = prev_address + (prev_address & 0x1);
+                listing_line.var_type = VarType::Dword;
     
                 if code_line.len() > size_directive_index {
                     listing_line.code_parts.push(String::from(code_line[size_directive_index + 1]));
@@ -68,8 +58,9 @@ pub fn parse_data_line(
             ".long" => {
                 new_address = prev_address + 8 + (prev_address & 0x1);
     
-                listing_line.is_variable = true;
+                listing_line.line_type = LineType::Variable;
                 listing_line.address = prev_address + (prev_address & 0x1);
+                listing_line.var_type = VarType::Long;
     
                 if code_line.len() > size_directive_index {
                     listing_line.code_parts.push(String::from(code_line[size_directive_index + 1]));
@@ -84,43 +75,38 @@ pub fn parse_data_line(
                 let mut string_length: i32 = 0;
 
                 if code_line.len() > size_directive_index {
-                    for i in (size_directive_index + 1)..code_length {
-                        let string_part: String = String::from(code_line[i]);
 
+                    let string_part: String = String::from(listing_line.original_line.clone());
 
-                        if i > (size_directive_index + 1) && string_proper {
-                            string_value.push(' ');
+                    for j in 0..string_part.len() {
+                        if string_proper {
                             string_length = string_length + 1;
-                        }
 
-                        for j in 0..string_part.len() {
-                            if string_proper {
-                                string_length = string_length + 1;
-
-                                if string_part.chars().nth(j).unwrap() == '"' {
-                                    if string_part.chars().nth(j-1).unwrap() != '\\' {
-                                        string_proper = false;
-                                    } else {
-                                        string_value.pop();
-                                        string_length = string_length - 1;
-                                        string_value.push('"');
-                                    }
-                                    
+                            if string_part.chars().nth(j).unwrap() == '"' {
+                                if string_part.chars().nth(j-1).unwrap() != '\\' {
+                                    string_proper = false;
                                 } else {
-                                    string_value.push(string_part.chars().nth(j).unwrap());
-                                }                            
-                            } else if string_part.chars().nth(j).unwrap() == '"' {
-                                string_proper = true;
-                            }
+                                    string_value.pop();
+                                    string_length = string_length - 1;
+                                    string_value.push('"');
+                                }
+                                    
+                            } else {
+                                string_value.push(string_part.chars().nth(j).unwrap());
+                            }                            
+                        } else if string_part.chars().nth(j).unwrap() == '"' {
+                            string_proper = true;
                         }
                     }
+                    
 
                     new_address = prev_address + string_length + (prev_address & 0x1);
     
-                    listing_line.is_variable = true;
+                    listing_line.line_type = LineType::Variable;
                     listing_line.address = prev_address + (prev_address & 0x1);
 
                     listing_line.code_parts.push(string_value);
+                    listing_line.var_type = VarType::String;
                 } else {
                     // error
                     println!("\nData segment ERROR:\nOn line {}\n String variables should always be initialized:\n [label:] .strig \"some string value\"", line_number);
