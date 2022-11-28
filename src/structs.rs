@@ -71,3 +71,123 @@ impl Arg {
         };
     }
 }
+
+pub struct NumParseRes {
+    num_val: i64,
+    is_num: bool,
+}
+
+impl NumParseRes {
+    pub fn new() -> NumParseRes {
+        return NumParseRes { num_val: 0, is_num: false };
+    }
+
+    pub fn set(&mut self, num: i64) {
+        self.is_num = true;
+        self.num_val = num;
+    }
+
+    pub fn clear(&mut self) {
+        self.is_num = false;
+        self.num_val = 0;
+    }
+
+    pub fn get(&self) -> Option<i64> {
+        if self.is_num {
+            return Some(self.num_val);
+        } else {
+            return None;
+        }
+    }
+
+    pub fn update(&mut self, num: i64) {
+        if self.is_num {
+            self.num_val = num;
+        } else {
+            println!("Error updating a number: trying to update NaN value");
+        }
+    }
+
+    pub fn push_binary_char(&mut self, digit: char) {
+        if self.is_num {
+            match digit {
+                '0' => self.num_val = self.num_val << 1,
+                '1' => self.num_val = (self.num_val << 1) + 1,
+                _ => {
+                    println!("\nError adding binary digit:\n {} is not 0 or 1", digit);
+                    self.is_num = false;
+                }
+            }
+        } else {
+            println!("Error adding binary digit:\n trying to update NaN value");
+        }
+    }
+
+    pub fn push_dec_char(&mut self, digit: char) {
+        if self.is_num {
+            match digit {
+                '0' => self.num_val = self.num_val * 10,
+                '1' => self.num_val = (self.num_val * 10) + 1,
+                '2' => self.num_val = (self.num_val * 10) + 2,
+                '3' => self.num_val = (self.num_val * 10) + 3,
+                '4' => self.num_val = (self.num_val * 10) + 4,
+                '5' => self.num_val = (self.num_val * 10) + 5,
+                '6' => self.num_val = (self.num_val * 10) + 6,
+                '7' => self.num_val = (self.num_val * 10) + 7,
+                '8' => self.num_val = (self.num_val * 10) + 8,
+                '9' => self.num_val = (self.num_val * 10) + 9,
+                _ => {
+                    println!("\nError adding decimal digit:\n {} is not in range [0-9]", digit);
+                    self.is_num = false;
+                }
+            }
+        } else {
+            println!("Error adding decimal digit:\n trying to update NaN value");
+        }
+    }
+
+    pub fn push_hex_char(&mut self, digit: char) {
+        if self.is_num {
+            match digit {
+                '0' => self.num_val = self.num_val << 4,
+                '1' => self.num_val = (self.num_val << 4) + 1,
+                '2' => self.num_val = (self.num_val << 4) + 2,
+                '3' => self.num_val = (self.num_val << 4) + 3,
+                '4' => self.num_val = (self.num_val << 4) + 4,
+                '5' => self.num_val = (self.num_val << 4) + 5,
+                '6' => self.num_val = (self.num_val << 4) + 6,
+                '7' => self.num_val = (self.num_val << 4) + 7,
+                '8' => self.num_val = (self.num_val << 4) + 8,
+                '9' => self.num_val = (self.num_val << 4) + 9,
+                'a' => self.num_val = (self.num_val << 4) + 10,
+                'A' => self.num_val = (self.num_val << 4) + 10,
+                'b' => self.num_val = (self.num_val << 4) + 11,
+                'B' => self.num_val = (self.num_val << 4) + 11,
+                'c' => self.num_val = (self.num_val << 4) + 12,
+                'C' => self.num_val = (self.num_val << 4) + 12,
+                'd' => self.num_val = (self.num_val << 4) + 13,
+                'D' => self.num_val = (self.num_val << 4) + 13,
+                'e' => self.num_val = (self.num_val << 4) + 14,
+                'E' => self.num_val = (self.num_val << 4) + 14,
+                'f' => self.num_val = (self.num_val << 4) + 15,
+                'F' => self.num_val = (self.num_val << 4) + 15,
+                _ => {
+                    println!("\nError adding hex digit:\n {} is not in range [0-9a-fA-F]", digit);
+                    self.is_num = false;
+                }
+            }
+        } else {
+            println!("Error adding hex digit:\n trying to update NaN value");
+        }
+    }
+
+    pub fn make_negative(&mut self) {
+        if self.is_num {
+            self.num_val = 0 - self.num_val;
+        } else {
+            println!("Error making negative: trying to update NaN value");
+        }
+    }
+
+
+}

@@ -1,7 +1,7 @@
 // common functions to be used in multiple modules
 use std::io;
 
-use crate::structs::Arg;
+use crate::structs::{Arg, NumParseRes};
 use crate::enums::ArgType;
 
 pub fn read_input<T: std::str::FromStr>(error_message: &str) -> T {
@@ -40,51 +40,28 @@ pub fn read_input<T: std::str::FromStr>(error_message: &str) -> T {
     return result;
 }
 
-pub fn number_parser(input_string: &str) -> i64 {
+pub fn number_parser(input_string: &str) -> NumParseRes {
     //this should interpret decimal, binary and hex strings, in the most primitive way
 
     let char_array: Vec<char> = input_string.chars().collect();
-    let mut parsed_number: i64 = 0;
+    let mut num: NumParseRes = NumParseRes::new();
+    num.set(0);
 
     match char_array.len() {
         0 => {
-            println!("Empty string provided! default to 0");
+            num.clear();
         },
         1 => { //must be decimal
-            match char_array[0] {
-                '0' => parsed_number = 0,
-                '1' => parsed_number = 1,
-                '2' => parsed_number = 2,
-                '3' => parsed_number = 3,
-                '4' => parsed_number = 4,
-                '5' => parsed_number = 5,
-                '6' => parsed_number = 6,
-                '7' => parsed_number = 7,
-                '8' => parsed_number = 8,
-                '9' => parsed_number = 9,
-                _ => {
-                    parsed_number = 0;
-                    println!("not a decimal number!");
-                }
-            }
-
-            if is_decimal(char_array[0]) {
-                parsed_number = decimal_parser(char_array[0])
-            }
+            num.push_dec_char(char_array[0]);
         },
         2 => { //must be decimal, may be with sign
             // decimal
             if char_array[0] == '-' {
-                for i in 1..char_array.len() {
-                    parsed_number = parsed_number * 10;
-
-                    parsed_number = parsed_number - decimal_parser(char_array[i]);
-                }
+                num.push_dec_char(char_array[1]);
+                num.make_negative();
             } else {
                 for i in 0..char_array.len() {
-                    parsed_number = parsed_number * 10;
-
-                    parsed_number = parsed_number + decimal_parser(char_array[i]);
+                    num.push_dec_char(char_array[i]);
                 }
             }
         },
@@ -93,103 +70,34 @@ pub fn number_parser(input_string: &str) -> i64 {
                 if char_array[1] == 'b' {
                     // binary number
                     for i in 2..char_array.len() {
-                        parsed_number = parsed_number << 1;
-
-                        if char_array[i] == '1' {
-                            parsed_number = parsed_number + 1;
-                        }
+                        num.push_binary_char(char_array[i]);
                     }
                 } else if char_array[1] == 'x' {
                     // hexadecimal
                     for i in 2..char_array.len() {
-                        parsed_number = parsed_number << 4;
-
-                        parsed_number = parsed_number + hex_parser(char_array[i]);
+                        num.push_hex_char(char_array[i]);
                     }
                 } else {
-                    // malformed
-                    println!("Not a number!");
+                    num.clear();
                 }
-            } else if is_decimal(char_array[0]) {
+            } else {
                 // decimal
                 if char_array[0] == '-' {
                     for i in 1..char_array.len() {
-                        parsed_number = parsed_number * 10;
-
-                        parsed_number = parsed_number - decimal_parser(char_array[i]);
+                        num.push_dec_char(char_array[i]);
                     }
                 } else {
                     for i in 0..char_array.len() {
-                        parsed_number = parsed_number * 10;
-
-                        parsed_number = parsed_number + decimal_parser(char_array[i]);
+                        num.push_dec_char(char_array[i]);
                     }
                 }
-            } else {
-                println!("Not a number! Defaulting to 0");
             }
 
         },
     }
 
-    return parsed_number;
+    return num;
 
-}
-
-fn is_decimal(d: char) -> bool {
-    return d == '1' || d == '2' || d == '3'  || d == '4' || d == '5' || d == '6' || d == '7' || d == '8' || d == '9' || d == '-';
-}
-
-fn decimal_parser(digit: char) -> i64 {
-    let mut parsed_number: i64 = 0;
-
-    match digit {
-        '0' => parsed_number = 0,
-        '1' => parsed_number = 1,
-        '2' => parsed_number = 2,
-        '3' => parsed_number = 3,
-        '4' => parsed_number = 4,
-        '5' => parsed_number = 5,
-        '6' => parsed_number = 6,
-        '7' => parsed_number = 7,
-        '8' => parsed_number = 8,
-        '9' => parsed_number = 9,
-        _ => println!("not a decimal number!"),
-    }
-
-    return parsed_number;
-}
-
-fn hex_parser(digit: char) -> i64 {
-    let mut parsed_number: i64 = 0;
-
-    match digit {
-        '0' => parsed_number = 0,
-        '1' => parsed_number = 1,
-        '2' => parsed_number = 2,
-        '3' => parsed_number = 3,
-        '4' => parsed_number = 4,
-        '5' => parsed_number = 5,
-        '6' => parsed_number = 6,
-        '7' => parsed_number = 7,
-        '8' => parsed_number = 8,
-        '9' => parsed_number = 9,
-        'a' => parsed_number = 10,
-        'b' => parsed_number = 11,
-        'c' => parsed_number = 12,
-        'd' => parsed_number = 13,
-        'e' => parsed_number = 14,
-        'f' => parsed_number = 15,
-        'A' => parsed_number = 10,
-        'B' => parsed_number = 11,
-        'C' => parsed_number = 12,
-        'D' => parsed_number = 13,
-        'E' => parsed_number = 14,
-        'F' => parsed_number = 15,
-        _ => println!("not a hexadecimal number!"),
-    }
-
-    return parsed_number;
 }
 
 pub fn register_matcher(arg_name: &str) -> Arg {
@@ -225,7 +133,10 @@ pub fn register_matcher(arg_name: &str) -> Arg {
         "SR" => Arg::new(ArgType::Special, 1),
         "MDB" => Arg::new(ArgType::Special, 2),
         "IVB" => Arg::new(ArgType::Special, 3),
-        _ => Arg::new(ArgType::Value, 0),
+        _ => {
+
+            Arg::new(ArgType::Value, 0)
+        },
     }   
 
 

@@ -6,15 +6,15 @@ use crate::enums::VarType;
 pub fn encode_variable(code_line: &mut Code) {
     match code_line.var_type {
         VarType::Word => {
-            code_line.machine_code.push(number_parser(&code_line.code_parts[0]) as u16);
+            code_line.machine_code.push(number_parser(&code_line.code_parts[0]).get().unwrap_or_default() as u16);
         },
         VarType::Dword => {
-            let value: u32 = number_parser(&code_line.code_parts[0]) as u32;
+            let value: u32 = number_parser(&code_line.code_parts[0]).get().unwrap_or_default() as u32;
             code_line.machine_code.push((value.clone() >> 16) as u16);
             code_line.machine_code.push(value as u16);
         },
         VarType::Long => {
-            let value: u64 = number_parser(&code_line.code_parts[0]) as u64;
+            let value: u64 = number_parser(&code_line.code_parts[0]).get().unwrap_or_default() as u64;
             code_line.machine_code.push((value.clone() >> 48) as u16);
             code_line.machine_code.push((value.clone() >> 32) as u16);
             code_line.machine_code.push((value.clone() >> 16) as u16);

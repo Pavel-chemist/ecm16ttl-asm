@@ -47,4 +47,5 @@ pub enum ArgType {
     MP,
     Special,
     Value,
+    Label,
 }
