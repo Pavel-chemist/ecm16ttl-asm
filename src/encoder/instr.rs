@@ -92,7 +92,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         ArgType::Gpr => {
                             code_line.machine_code[0] = 
                                 code_line.machine_code[0] |
-                                (args[0].get_val() as u16);
+                                (args[2].get_val() as u16);
                         },
                         _ => {
                             //error

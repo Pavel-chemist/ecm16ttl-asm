@@ -28,8 +28,10 @@ fn main() {
         Ok(buff) => {
             file_contents = buff;
 
+            // first pass
             code_listing = preprocessor::first_read(file_contents.lines().collect(), &mut labels_table);
 
+            // second pass
             encode(&mut code_listing, &labels_table);
         }
     };
