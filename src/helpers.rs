@@ -41,7 +41,7 @@ pub fn read_input<T: std::str::FromStr>(error_message: &str) -> T {
 }
 
 pub fn number_parser(input_string: &str) -> NumParseRes {
-    //this should interpret decimal, binary and hex strings, in the most primitive way
+    //this should interpret decimal, binary and hex strings
 
     let char_array: Vec<char> = input_string.chars().collect();
     let mut num: NumParseRes = NumParseRes::new();
@@ -58,24 +58,40 @@ pub fn number_parser(input_string: &str) -> NumParseRes {
             // decimal
             if char_array[0] == '-' {
                 num.push_dec_char(char_array[1]);
-                num.make_negative();
+                if num.is_num() {
+                    num.make_negative();
+                }
             } else {
                 for i in 0..char_array.len() {
-                    num.push_dec_char(char_array[i]);
+                    if num.is_num() {
+                        num.push_dec_char(char_array[i]);
+                    } else {
+                        break;
+                    }
+                    
                 }
-            }
+            }   
         },
         _ => { //3 and more chars, may be anything
             if char_array[0] == '0' {
                 if char_array[1] == 'b' {
                     // binary number
                     for i in 2..char_array.len() {
-                        num.push_binary_char(char_array[i]);
+                        if num.is_num() {
+                            num.push_binary_char(char_array[i]);
+                        } else {
+                            break;
+                        }
+                        
                     }
                 } else if char_array[1] == 'x' {
                     // hexadecimal
                     for i in 2..char_array.len() {
-                        num.push_hex_char(char_array[i]);
+                        if num.is_num() {
+                            num.push_hex_char(char_array[i]);
+                        } else {
+                            break;
+                        }
                     }
                 } else {
                     num.clear();
@@ -84,15 +100,26 @@ pub fn number_parser(input_string: &str) -> NumParseRes {
                 // decimal
                 if char_array[0] == '-' {
                     for i in 1..char_array.len() {
-                        num.push_dec_char(char_array[i]);
+                        if num.is_num() {
+                            num.push_dec_char(char_array[i]);
+                        } else {
+                            break;
+                        }
+                        
+                    }
+                    if num.is_num() {
+                        num.make_negative();
                     }
                 } else {
                     for i in 0..char_array.len() {
-                        num.push_dec_char(char_array[i]);
+                        if num.is_num() {
+                            num.push_dec_char(char_array[i]);
+                        } else {
+                            break;
+                        }
                     }
                 }
             }
-
         },
     }
 
@@ -100,7 +127,7 @@ pub fn number_parser(input_string: &str) -> NumParseRes {
 
 }
 
-pub fn register_matcher(arg_name: &str) -> Arg {
+pub fn arg_matcher(arg_name: &str) -> Arg {
     match arg_name {
         "r0" => Arg::new(ArgType::Gpr, 0),
         "r1" => Arg::new(ArgType::Gpr, 1),
@@ -134,8 +161,14 @@ pub fn register_matcher(arg_name: &str) -> Arg {
         "MDB" => Arg::new(ArgType::Special, 2),
         "IVB" => Arg::new(ArgType::Special, 3),
         _ => {
-
-            Arg::new(ArgType::Value, 0)
+            match number_parser(arg_name).get() {
+                Some(number) => {
+                    return Arg::new(ArgType::Value, number);
+                },
+                None => {
+                    return Arg::new(ArgType::Label, 0);
+                },  
+            }
         },
     }   
 

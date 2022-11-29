@@ -22,19 +22,6 @@ impl Code {
             original_line: String::from(orig_line), 
         };
     }
-
-    /* pub fn substitute_labels(self) {
-        //in code_parts, find non-regName and non-number values, and substitute them with labeled values from labels_table
-        //if label is not found, throw error
-    }
-
-    pub fn decode_instructions(self) {
-        //translate code_parts into u16 values and push them into machine_code
-    }
-
-    pub fn put_variable_value(self) {
-        //translate code_parts into u16 values and push them into machine_code
-    } */
 }
 
 pub struct Label {
@@ -59,27 +46,40 @@ pub struct InstrDescr {
 }
 
 pub struct Arg {
-    pub arg_type: ArgType,
-    pub value: i32,
+    arg_type: ArgType,
+    value: i64,
 }
 
 impl Arg {
-    pub fn new(arg_type: ArgType, value: i32) -> Arg {
+    pub fn new(arg_type: ArgType, value: i64) -> Arg {
         return Arg {
             arg_type,
             value,
         };
+    }
+
+    pub fn update_val(&mut self, new_value: i64) {
+        self.value = new_value;
+    }
+
+    pub fn get_val(&self) -> i64 {
+        return self.value;
+    }
+
+    pub fn get_type(&self) -> ArgType {
+        return self.arg_type.clone();
     }
 }
 
 pub struct NumParseRes {
     num_val: i64,
     is_num: bool,
+    show_err: bool,
 }
 
 impl NumParseRes {
     pub fn new() -> NumParseRes {
-        return NumParseRes { num_val: 0, is_num: false };
+        return NumParseRes { num_val: 0, is_num: false, show_err: false };
     }
 
     pub fn set(&mut self, num: i64) {
@@ -87,24 +87,24 @@ impl NumParseRes {
         self.num_val = num;
     }
 
+    pub fn toggle_error_messaging(&mut self) {
+        self.show_err = true;
+    }
+
     pub fn clear(&mut self) {
         self.is_num = false;
         self.num_val = 0;
     }
 
+    pub fn is_num(&self) -> bool {
+        return self.is_num;
+    }
+   
     pub fn get(&self) -> Option<i64> {
         if self.is_num {
             return Some(self.num_val);
         } else {
             return None;
-        }
-    }
-
-    pub fn update(&mut self, num: i64) {
-        if self.is_num {
-            self.num_val = num;
-        } else {
-            println!("Error updating a number: trying to update NaN value");
         }
     }
 
@@ -119,7 +119,9 @@ impl NumParseRes {
                 }
             }
         } else {
-            println!("Error adding binary digit:\n trying to update NaN value");
+            if self.show_err {
+                println!("Error adding binary digit:\n trying to update NaN value");
+            }
         }
     }
 
@@ -137,19 +139,23 @@ impl NumParseRes {
                 '8' => self.num_val = (self.num_val * 10) + 8,
                 '9' => self.num_val = (self.num_val * 10) + 9,
                 _ => {
-                    println!("\nError adding decimal digit:\n {} is not in range [0-9]", digit);
+                    if self.show_err {
+                        println!("\nError adding decimal digit:\n {} is not in range [0-9]", digit);
+                    }
                     self.is_num = false;
                 }
             }
         } else {
-            println!("Error adding decimal digit:\n trying to update NaN value");
+            if self.show_err {
+                println!("Error adding decimal digit:\n trying to update NaN value");
+            }
         }
     }
 
     pub fn push_hex_char(&mut self, digit: char) {
         if self.is_num {
             match digit {
-                '0' => self.num_val = self.num_val << 4,
+                '0' => self.num_val = (self.num_val << 4) + 0,
                 '1' => self.num_val = (self.num_val << 4) + 1,
                 '2' => self.num_val = (self.num_val << 4) + 2,
                 '3' => self.num_val = (self.num_val << 4) + 3,
@@ -172,12 +178,16 @@ impl NumParseRes {
                 'f' => self.num_val = (self.num_val << 4) + 15,
                 'F' => self.num_val = (self.num_val << 4) + 15,
                 _ => {
-                    println!("\nError adding hex digit:\n {} is not in range [0-9a-fA-F]", digit);
+                    if self.show_err {
+                        println!("\nError adding hex digit:\n {} is not in range [0-9a-fA-F]", digit);
+                    }
                     self.is_num = false;
                 }
             }
         } else {
-            println!("Error adding hex digit:\n trying to update NaN value");
+            if self.show_err {
+                println!("Error adding hex digit:\n trying to update NaN value");
+            }
         }
     }
 
@@ -185,7 +195,9 @@ impl NumParseRes {
         if self.is_num {
             self.num_val = 0 - self.num_val;
         } else {
-            println!("Error making negative: trying to update NaN value");
+            if self.show_err {
+                println!("Error making negative: trying to update NaN value");
+            }            
         }
     }
 

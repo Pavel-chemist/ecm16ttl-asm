@@ -3,6 +3,7 @@
 
 .text
     main:
+        ADD r2 r3 r4
         LDd r1 input_address
         ADDi r1 number          #adds number to register r1
 
@@ -12,6 +13,8 @@
 
     number: 
         .word 0x001F
+
+    long_num: .long  12345678900
 
     other_num:
         .dword 0x12345678

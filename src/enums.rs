@@ -41,6 +41,7 @@ pub enum InstrType {
     Misc,
 }
 
+#[derive(Clone)]
 pub enum ArgType {
     Gpr,
     Mpr,

@@ -11,13 +11,9 @@ mod encoder;
 
 // declaring functionality of used modules
 // use helpers::{read_input, number_parser};
-// use command_interpreter::interpret;
 use encoder::encode;
 
 use crate::enums::LineType;
-
-
-
 
 fn main() {
     let file_path: String;
