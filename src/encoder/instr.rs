@@ -117,14 +117,22 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
 
                     match args[1].get_type() {
                         ArgType::Value => {
-                            code_line.machine_code[0] = 
-                                code_line.machine_code[0] |
-                                ((args[1].get_val() as u16) & 0xFF);
+                            let val: i64 = args[1].get_val();
+
+                            if val >= 0 && val < 256 {
+                                code_line.machine_code[0] = code_line.machine_code[0] | (val as u16);
+                            } else {
+                                println!("Arguments Error\n on line {}\n 2nd argument for {} instruction should be in range 0..255 (0x00..0xFF), got {}.", code_line.line_number, code_line.code_parts[0], val)
+                            }
                         },
                         ArgType::Label => {
-                            code_line.machine_code[0] = 
-                                code_line.machine_code[0] |
-                                ((args[1].get_val() as u16) & 0xFF);
+                            let val: i64 = args[1].get_val();
+
+                            if val >= 0 && val < 256 {
+                                code_line.machine_code[0] = code_line.machine_code[0] | (val as u16);
+                            } else {
+                                println!("Arguments Error\n on line {}\n 2nd argument for {} instruction should be in range 0..255 (0x00..0xFF), got {}.", code_line.line_number, code_line.code_parts[0], val)
+                            }
                         },
                         _ => {
                             //error
@@ -215,14 +223,22 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
 
                     match args[2].get_type() {
                         ArgType::Value => {
-                            code_line.machine_code[0] = 
-                                code_line.machine_code[0] |
-                                ((args[2].get_val() as u16) & 0xF);
+                            let val: i64 = args[2].get_val();
+
+                            if val >= 0 && val < 15 {
+                                code_line.machine_code[0] = code_line.machine_code[0] | (val as u16);
+                            } else {
+                                println!("Arguments Error\n on line {}\n 2nd argument for {} instruction should be in range 0..15 (0x0..0xF), got {}.", code_line.line_number, code_line.code_parts[0], val)
+                            }
                         },
                         ArgType::Label => {
-                            code_line.machine_code[0] = 
-                                code_line.machine_code[0] |
-                                ((args[2].get_val() as u16) & 0xF);
+                            let val: i64 = args[2].get_val();
+
+                            if val >= 0 && val < 15 {
+                                code_line.machine_code[0] = code_line.machine_code[0] | (val as u16);
+                            } else {
+                                println!("Arguments Error\n on line {}\n 2nd argument for {} instruction should be in range 0..15 (0x0..0xF), got {}.", code_line.line_number, code_line.code_parts[0], val)
+                            }
                         },
                         _ => {
                             //error
@@ -247,10 +263,24 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     
                     match args[1].get_type() {
                         ArgType::Value => {
-                            code_line.machine_code.push(args[1].get_val() as u16);
+                            let val: i64 = args[1].get_val();
+
+                            if val >= -32768 && val <= 32767 {
+                                code_line.machine_code.push(val as u16);
+                            } else {
+                                println!("Arguments Error\n on line {}\n 2nd argument for {} instruction should be in range -32768..32767 (0x0000..0xFFFF), got {}.", code_line.line_number, code_line.code_parts[0], val);
+                            }
+
+                            
                         },
                         ArgType::Label => {
-                            code_line.machine_code.push(args[1].get_val() as u16);
+                            let val: i64 = args[1].get_val();
+
+                            if val >= -32768 && val <= 32767 {
+                                code_line.machine_code.push(val as u16);
+                            } else {
+                                println!("Arguments Error\n on line {}\n 2nd argument for {} instruction should be in range -32768..32767 (0x0000..0xFFFF), got {}.", code_line.line_number, code_line.code_parts[0], val);
+                            }
                         },
                         _ => {
                             //error
@@ -275,18 +305,21 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     
                     match args[1].get_type() {
                         ArgType::Value => {
-                            code_line.machine_code[0] = 
-                                code_line.machine_code[0] |
-                                (((args[1].get_val().clone() >> 16) as u16) & 0x1FF);
+                            /* let val: i64 = args[1].get_val();
 
-                            code_line.machine_code.push(args[1].get_val() as u16);
+                            if val < -32768 || val > 32767 {
+                                println!("Arguments Error\n on line {}\n 2nd argument for {} instruction should be in range -32768..32767 (0x0000..0xFFFF).", code_line.line_number, code_line.code_parts[0])
+                            } */
+                            let val: i64 = args[1].get_val();
+
+                            code_line.machine_code[0] = code_line.machine_code[0] | (((val >> 16) as u16) & 0x1FF);
+                            code_line.machine_code.push(val as u16);
                         },
                         ArgType::Label => {
-                            code_line.machine_code[0] = 
-                                code_line.machine_code[0] |
-                                (((args[1].get_val().clone() >> 16) as u16) & 0x1FF);
+                            let val: i64 = args[1].get_val();
 
-                            code_line.machine_code.push(args[1].get_val() as u16);
+                            code_line.machine_code[0] = code_line.machine_code[0] | (((val >> 16) as u16) & 0x1FF);
+                            code_line.machine_code.push(val as u16);
                         },
                         _ => {
                             //error
@@ -353,7 +386,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         },
                         _ => {
                             //error
-                            println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of gpr or mpr.", code_line.line_number, code_line.code_parts[0]);
+                            println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of MP.", code_line.line_number, code_line.code_parts[0]);
                         }
                     }
                 },
@@ -379,7 +412,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         },
                         _ => {
                             //error
-                            println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of gpr or mpr.", code_line.line_number, code_line.code_parts[0]);
+                            println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of MP.", code_line.line_number, code_line.code_parts[0]);
                         }
                     }
 
@@ -416,7 +449,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         },
                         _ => {
                             //error
-                            println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of gpr or mpr.", code_line.line_number, code_line.code_parts[0]);
+                            println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of MP.", code_line.line_number, code_line.code_parts[0]);
                         }
                     }
 
@@ -425,20 +458,28 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                             // when numeric value is provided, it is assumed
                             // MemPointer other than PC is used
                             // and value is treated as offset from that pointer
-                            code_line.machine_code.push(args[2].get_val() as u16);
+
+                            let val: i64 = args[2].get_val();
+
+                            if val >= -32768 && val <= 32767 {
+                                code_line.machine_code.push(val as u16);
+                            } else {
+                                //error
+                                println!("Arguments ERROR\n on line {}\n 3rd argument for {} instruction should be number in range [-32768..32767] (0x0000..0xFFFF), got {}.", code_line.line_number, code_line.code_parts[0], val);
+                            }
                         },
                         ArgType::Label => {
                             // when there is a label used, it is assumed that
                             // PC is used as base address.
                             // As PC is always updating, and label is most probably an absolute address,
-                            // the offsed is calculated here
+                            // the offset is calculated here
 
                             let offset: i32 = (args[2].get_val() as i32) - (code_line.address + 2);
                             code_line.machine_code.push(offset as u16);
                         },
                         _ => {
                             //error
-                            println!("Arguments ERROR\n on line {}\n 3rd argument for {} instruction should be numeric value.", code_line.line_number, code_line.code_parts[0]);
+                            println!("Arguments ERROR\n on line {}\n 3rd argument for {} instruction should be number or labelled address.", code_line.line_number, code_line.code_parts[0]);
                         }
                     }
                 },
@@ -497,16 +538,32 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
 
                     match args[1].get_type() {
                         ArgType::Value => {
-                            code_line.machine_code[0] = code_line.machine_code[0] | 
-                                (((args[1].get_val() >> 16) as u16) & 0x00FF);
+                            let val: i64 = args[1].get_val();
 
-                            code_line.machine_code.push(args[1].get_val() as u16);
+                            if val >= -8388608 && val <= 83886078 {
+                                code_line.machine_code[0] = 
+                                    code_line.machine_code[0] | 
+                                    (((val >> 16) as u16) & 0x00FF);
+
+                                code_line.machine_code.push(val as u16);
+                            } else {
+                                //error
+                                println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be number in range [-8388608..8388607] (0x000000..0xFFFFFF), got {}.", code_line.line_number, code_line.code_parts[0], val);
+                            }
                         },
                         ArgType::Label => {
-                            code_line.machine_code[0] = code_line.machine_code[0] | 
-                            (((args[1].get_val() >> 16) as u16) & 0x00FF);
+                            let val: i64 = args[1].get_val();
 
-                            code_line.machine_code.push(args[1].get_val() as u16);
+                            if val >= -8388608 && val <= 83886078 {
+                                code_line.machine_code[0] = 
+                                    code_line.machine_code[0] | 
+                                    (((val >> 16) as u16) & 0x00FF);
+
+                                code_line.machine_code.push(val as u16);
+                            } else {
+                                //error
+                                println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be number in range [-8388608..8388607] (0x000000..0xFFFFFF), got {}.", code_line.line_number, code_line.code_parts[0], val);
+                            }
                         },
                         _ => {
                             //error
@@ -630,14 +687,24 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
 
                     match args[0].get_type() {
                         ArgType::Value => {
-                            code_line.machine_code[0] = 
-                                code_line.machine_code[0] | 
-                                (((args[0].get_val() as u16) & 0x7) << 5);
+                            let val: i64 = args[0].get_val();
+
+                            if val >= 0 && val < 8 {
+                                code_line.machine_code[0] = code_line.machine_code[0] | ((val as u16) << 5);
+                            } else {
+                                //error
+                                println!("Arguments ERROR\n on line {}\n argument for {} instruction should be number in range [0..7] (0x0..0x7), got {}.", code_line.line_number, code_line.code_parts[0], val);
+                            }
                         },
                         ArgType::Label => {
-                            code_line.machine_code[0] = 
-                                code_line.machine_code[0] | 
-                                (((args[0].get_val() as u16) & 0x7) << 5);
+                            let val: i64 = args[0].get_val();
+
+                            if val >= 0 && val < 8 {
+                                code_line.machine_code[0] = code_line.machine_code[0] | ((val as u16) << 5);
+                            } else {
+                                //error
+                                println!("Arguments ERROR\n on line {}\n argument for {} instruction should be number in range [0..7] (0x0..0x7), got {}.", code_line.line_number, code_line.code_parts[0], val);
+                            }
                         },
                         _ => {
                             //error
@@ -650,14 +717,24 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
 
                     match args[0].get_type() {
                         ArgType::Value => {
-                            code_line.machine_code[0] = 
-                                code_line.machine_code[0] | 
-                                ((args[0].get_val() as u16) & 0xFF);
+                            let val: i64 = args[0].get_val();
+
+                            if val >= 0 && val < 256 {
+                                code_line.machine_code[0] = code_line.machine_code[0] | (val as u16);
+                            } else {
+                                //error
+                                println!("Arguments ERROR\n on line {}\n argument for {} instruction should be number in range [0..255] (0x0..0xFF), got {}.", code_line.line_number, code_line.code_parts[0], val);
+                            }
                         },
                         ArgType::Label => {
-                            code_line.machine_code[0] = 
-                                code_line.machine_code[0] | 
-                                ((args[0].get_val() as u16) & 0xFF);
+                            let val: i64 = args[0].get_val();
+
+                            if val >= 0 && val < 256 {
+                                code_line.machine_code[0] = code_line.machine_code[0] | (val as u16);
+                            } else {
+                                //error
+                                println!("Arguments ERROR\n on line {}\n argument for {} instruction should be number in range [0..255] (0x0..0xFF), got {}.", code_line.line_number, code_line.code_parts[0], val);
+                            }
                         },
                         _ => {
                             //error
