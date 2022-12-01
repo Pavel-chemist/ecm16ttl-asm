@@ -2,5 +2,7 @@
     number = 31
 
 .text
-    ORi r0 0
+    ADDi r0 1
     ADDi r1 number
+    ADD r2 r0 r1
+    SUB r3 r1 r0

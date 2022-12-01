@@ -1,4 +1,4 @@
-use std::fs;
+use std::{fs, path};
 // declaring modules used
 // declaring them in main makes it possible to other modules cross-use structs and functions
 
@@ -17,14 +17,14 @@ use structs::{Code, Label};
 use crate::enums::LineType;
 
 fn main() {
-    let file_path: String;
+    let file_path_in: String;
     let file_contents: String;
     let mut labels_table: Vec<Label> = Vec::new();
     let mut code_listing: Vec<Code> = Vec::new();
 
-    file_path = String::from("test/test.asm");
+    file_path_in = String::from("test/test.asm");
     
-    match fs::read_to_string(file_path) {
+    match fs::read_to_string(file_path_in) {
         Err(why) => println!("! {:?}", why.kind()),
         Ok(buff) => {
             file_contents = buff;
@@ -37,8 +37,35 @@ fn main() {
         }
     };
 
-    println!("{}", collate_listing(&code_listing, &labels_table));
-    println!("\n\n{}", output_hex(&code_listing));
+    save_files(&code_listing, &labels_table);
+}
+
+fn save_files(code_listing: &Vec<Code>, labels_table: &Vec<Label>) {
+    let path = path::Path::new("test/test.list");
+    let display = path.display();
+
+    let mut file = match fs::File::create(&path) {
+        Err(why) => panic!("couldn't create {}: {}", display, why),
+        Ok(file) => file,
+    };
+
+    match std::io::Write::write_all(&mut file, collate_listing(code_listing, labels_table).as_bytes()) {
+        Err(why) => panic!("couldn't write to {}: {}", display, why),
+        Ok(_) => println!("successfully wrote to {}", display),
+    }
+
+    let path = path::Path::new("test/test.hex");
+    let display = path.display();
+
+    let mut file = match fs::File::create(&path) {
+        Err(why) => panic!("couldn't create {}: {}", display, why),
+        Ok(file) => file,
+    };
+
+    match std::io::Write::write_all(&mut file, output_hex(code_listing).as_bytes()) {
+        Err(why) => panic!("couldn't write to {}: {}", display, why),
+        Ok(_) => println!("successfully wrote to {}", display),
+    }
 }
 
 fn collate_listing(code_listing: &Vec<Code>, labels_table: &Vec<Label>) -> String {
