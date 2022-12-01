@@ -45,14 +45,13 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
         args.push(argument_value);
     }
 
-    for i in 0..code_line.code_parts.len() {
+    /* for i in 0..code_line.code_parts.len() {
         if i == 0 {
             println!("code part: {}", code_line.code_parts[i]);
         } else {
             println!("code part: {}, translated to value: {}", code_line.code_parts[i], args[i-1].get_val());
         }
-        
-    }
+    } */
 
     match instr_map.get(instruction) {
         Some(instr) => {
@@ -61,8 +60,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
 
             match instr.itype {
                 InstrType::Alu => {
-                    // arg1 = register_matcher(&code_line.code_parts[1]).value;                   
-                    println!("istr type is Alu");
+                    //println!("istr type is Alu");
 
                     match args[0].get_type() {
                         ArgType::Gpr => {
@@ -101,7 +99,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     }
                 },
                 InstrType::AluConst => {
-                    println!("istr type is AluConst");
+                    //println!("istr type is AluConst");
 
                     match args[0].get_type() {
                         ArgType::Gpr => {
@@ -141,7 +139,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     }
                 },
                 InstrType::AluTest => {
-                    println!("istr type is AluTest");
+                    //println!("istr type is AluTest");
 
                     match args[0].get_type() {
                         ArgType::Gpr => {
@@ -168,7 +166,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     }
                 },
                 InstrType::AluOneSrc => {
-                    println!("istr type is AluOneSrc");
+                    //println!("istr type is AluOneSrc");
 
                     match args[0].get_type() {
                         ArgType::Gpr => {
@@ -195,7 +193,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     }
                 },
                 InstrType::AluRot => {
-                    println!("istr type is AluRot");
+                    //println!("istr type is AluRot");
 
                     match args[0].get_type() {
                         ArgType::Gpr => {
@@ -247,7 +245,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     }
                 },
                 InstrType::MemIgpr => {
-                    println!("istr type is MemIgpr");
+                    //println!("istr type is MemIgpr");
 
                     match args[0].get_type() {
                         ArgType::Gpr => {
@@ -289,7 +287,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     }
                 },
                 InstrType::MemImp => {
-                    println!("istr type is MemImp");
+                    //println!("istr type is MemImp");
 
                     match args[0].get_type() {
                         ArgType::MP => {
@@ -328,7 +326,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     }
                 },
                 InstrType::MemDirect => {
-                    println!("istr type is MemDirect");
+                    //println!("istr type is MemDirect");
 
                     match args[0].get_type() {
                         ArgType::Gpr => {
@@ -365,7 +363,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     }
                 },
                 InstrType::Mem => {
-                    println!("istr type is Mem");
+                    //println!("istr type is Mem");
 
                     match args[0].get_type() {
                         ArgType::Gpr => {
@@ -391,7 +389,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     }
                 },
                 InstrType::MemRo => {
-                    println!("istr type is MemRo");
+                    //println!("istr type is MemRo");
 
                     match args[0].get_type() {
                         ArgType::Gpr => {
@@ -428,7 +426,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     }
                 },
                 InstrType::MemIo => {
-                    println!("istr type is MemIo");
+                    //println!("istr type is MemIo");
 
                     match args[0].get_type() {
                         ArgType::Gpr => {
@@ -484,7 +482,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     }
                 },
                 InstrType::Jmp => {
-                    println!("istr type is Jump");
+                    //println!("istr type is Jump");
 
                     match args[0].get_type() {
                         ArgType::Label => {
@@ -500,7 +498,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     }
                 },
                 InstrType::AddrArithm => {
-                    println!("istr type is AddrArithm");
+                    //println!("istr type is AddrArithm");
 
                     match args[0].get_type() {
                         ArgType::MP => {
@@ -524,7 +522,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
 
                 },
                 InstrType::AddrArImm => {
-                    println!("istr type is AddrArImm");
+                    //println!("istr type is AddrArImm");
 
                     match args[0].get_type() {
                         ArgType::MP => {
@@ -572,7 +570,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     }
                 },
                 InstrType::Mov => {
-                    println!("istr type is Mov");
+                    //println!("istr type is Mov");
 
                     match args[0].get_type() {
                         ArgType::Gpr => {
@@ -611,7 +609,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     }
                 },
                 InstrType::Movs => {
-                    println!("istr type is Movs");
+                    //println!("istr type is Movs");
 
                     match args[0].get_type() {
                         ArgType::Gpr => {
@@ -683,7 +681,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     }
                 },
                 InstrType::Misc3bit => {
-                    println!("istr type is Misc3bit");
+                    //println!("istr type is Misc3bit");
 
                     match args[0].get_type() {
                         ArgType::Value => {
@@ -713,7 +711,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     }
                 },
                 InstrType::Misc8bit => {
-                    println!("istr type is Misc8bit");
+                    //println!("istr type is Misc8bit");
 
                     match args[0].get_type() {
                         ArgType::Value => {
@@ -743,7 +741,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     }
                 },
                 InstrType::Misc => {
-                    println!("istr type is Misc");
+                    //println!("istr type is Misc");
 
                     // there are no arguments here
                 },
