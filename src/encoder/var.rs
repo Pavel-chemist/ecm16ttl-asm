@@ -3,7 +3,7 @@ use crate::structs::Code;
 use crate::enums::VarType;
 
 
-pub fn encode_variable(code_line: &mut Code) {
+pub fn encode_variable(code_line: &mut Code, err: &mut bool) {
     match code_line.var_type {
         VarType::Word => {
             code_line.machine_code.push(number_parser(&code_line.code_parts[0]).get().unwrap_or_default() as u16);
@@ -39,11 +39,15 @@ pub fn encode_variable(code_line: &mut Code) {
             } else {
                 //error about non-ascii string
                 println!("Variable encoder ERROR\nOn line {}\nThe string contains non-ascii characters!", code_line.line_number);
+
+                *err = true;
             }
         },
         VarType::None => {
             //error about undefined type
             println!("Variable encoder ERROR\nOn line {}\nVariable {} has undefined type!", code_line.line_number, code_line.code_parts[0]);
+
+            *err = true;
         }
     }
 }

@@ -4,7 +4,7 @@ use crate::helpers::arg_matcher;
 use crate::structs::{Code, InstrDescr, Arg};
 use crate::lut::get_instr_table;
 
-pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32>) {
+pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32>, err: &mut bool) {
     let instr_map: HashMap<&str, InstrDescr> = get_instr_table();
     let instruction: &str = &code_line.code_parts[0];
     let mut args: Vec<Arg> = Vec::with_capacity(4);
@@ -20,6 +20,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                     },
                     None => {
                         println!("Error parsing arguments!\n on line {}\n For {} instruction: \n argument #{} is {}, which is not a register name, nor in the list of known labels!", code_line.line_number, code_line.code_parts[0], i, code_line.code_parts[i]);
+
+                        *err = true;
                         break;
                     }
                 }
@@ -71,6 +73,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 1st argument for {} instruction should be one of gpr.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
 
@@ -83,6 +87,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of gpr.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
 
@@ -95,6 +101,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 3rd argument for {} instruction should be one of gpr.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
                 },
@@ -110,6 +118,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 1st argument for {} instruction should be one of gpr.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
 
@@ -120,7 +130,9 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                             if val >= 0 && val < 256 {
                                 code_line.machine_code[0] = code_line.machine_code[0] | (val as u16);
                             } else {
-                                println!("Arguments Error\n on line {}\n 2nd argument for {} instruction should be in range 0..255 (0x00..0xFF), got {}.", code_line.line_number, code_line.code_parts[0], val)
+                                println!("Arguments Error\n on line {}\n 2nd argument for {} instruction should be in range 0..255 (0x00..0xFF), got {}.", code_line.line_number, code_line.code_parts[0], val);
+
+                                *err = true;
                             }
                         },
                         ArgType::Label => {
@@ -129,12 +141,16 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                             if val >= 0 && val < 256 {
                                 code_line.machine_code[0] = code_line.machine_code[0] | (val as u16);
                             } else {
-                                println!("Arguments Error\n on line {}\n 2nd argument for {} instruction should be in range 0..255 (0x00..0xFF), got {}.", code_line.line_number, code_line.code_parts[0], val)
+                                println!("Arguments Error\n on line {}\n 2nd argument for {} instruction should be in range 0..255 (0x00..0xFF), got {}.", code_line.line_number, code_line.code_parts[0], val);
+
+                                *err = true;
                             }
                         },
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of number or labelled value.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
                 },
@@ -150,6 +166,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 1st argument for {} instruction should be one of gpr.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
 
@@ -162,6 +180,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of gpr.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
                 },
@@ -177,6 +197,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 1st argument for {} instruction should be one of gpr.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
 
@@ -189,6 +211,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of gpr.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
                 },
@@ -204,6 +228,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 1st argument for {} instruction should be one of gpr.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
 
@@ -216,6 +242,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of gpr.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
 
@@ -226,7 +254,9 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                             if val >= 0 && val < 15 {
                                 code_line.machine_code[0] = code_line.machine_code[0] | (val as u16);
                             } else {
-                                println!("Arguments Error\n on line {}\n 2nd argument for {} instruction should be in range 0..15 (0x0..0xF), got {}.", code_line.line_number, code_line.code_parts[0], val)
+                                println!("Arguments Error\n on line {}\n 2nd argument for {} instruction should be in range 0..15 (0x0..0xF), got {}.", code_line.line_number, code_line.code_parts[0], val);
+
+                                *err = true;
                             }
                         },
                         ArgType::Label => {
@@ -235,12 +265,16 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                             if val >= 0 && val < 15 {
                                 code_line.machine_code[0] = code_line.machine_code[0] | (val as u16);
                             } else {
-                                println!("Arguments Error\n on line {}\n 2nd argument for {} instruction should be in range 0..15 (0x0..0xF), got {}.", code_line.line_number, code_line.code_parts[0], val)
+                                println!("Arguments Error\n on line {}\n 2nd argument for {} instruction should be in range 0..15 (0x0..0xF), got {}.", code_line.line_number, code_line.code_parts[0], val);
+
+                                *err = true;
                             }
                         },
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 3rd argument for {} instruction should be one of number or labelled value.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
                 },
@@ -256,6 +290,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 1st argument for {} instruction should be one of gpr.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
                     
@@ -267,6 +303,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                                 code_line.machine_code.push(val as u16);
                             } else {
                                 println!("Arguments Error\n on line {}\n 2nd argument for {} instruction should be in range -32768..32767 (0x0000..0xFFFF), got {}.", code_line.line_number, code_line.code_parts[0], val);
+
+                                *err = true;
                             }
 
                             
@@ -278,11 +316,15 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                                 code_line.machine_code.push(val as u16);
                             } else {
                                 println!("Arguments Error\n on line {}\n 2nd argument for {} instruction should be in range -32768..32767 (0x0000..0xFFFF), got {}.", code_line.line_number, code_line.code_parts[0], val);
+
+                                *err = true;
                             }
                         },
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of number or labelled value.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
                 },
@@ -298,6 +340,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 1st argument for {} instruction should be one of MP.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
                     
@@ -322,6 +366,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of number or labelled value.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
                 },
@@ -338,6 +384,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 1st argument for {} instruction should be one of gpr or mpr.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
 
@@ -359,6 +407,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of number or labelled value.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
                 },
@@ -375,6 +425,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 1st argument for {} instruction should be one of gpr or mpr.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
 
@@ -385,6 +437,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of MP.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
                 },
@@ -401,6 +455,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 1st argument for {} instruction should be one of gpr or mpr.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
 
@@ -411,6 +467,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of MP.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
 
@@ -422,6 +480,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 3rd argument for {} instruction should be one of gpr.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
                 },
@@ -438,6 +498,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 1st argument for {} instruction should be one of gpr or mpr.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
 
@@ -448,6 +510,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of MP.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
 
@@ -464,6 +528,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                             } else {
                                 //error
                                 println!("Arguments ERROR\n on line {}\n 3rd argument for {} instruction should be number in range [-32768..32767] (0x0000..0xFFFF), got {}.", code_line.line_number, code_line.code_parts[0], val);
+
+                                *err = true;
                             }
                         },
                         ArgType::Label => {
@@ -478,6 +544,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 3rd argument for {} instruction should be number or labelled address.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
                 },
@@ -494,6 +562,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n argument for {} instruction should be labelled address.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
                 },
@@ -507,6 +577,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 1st argument for {} instruction should be one of the MP.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
 
@@ -517,6 +589,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 1st argument for {} instruction should be one of the gpr.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
 
@@ -531,6 +605,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 1st argument for {} instruction should be one of the MP.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
 
@@ -547,6 +623,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                             } else {
                                 //error
                                 println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be number in range [-8388608..8388607] (0x000000..0xFFFFFF), got {}.", code_line.line_number, code_line.code_parts[0], val);
+
+                                *err = true;
                             }
                         },
                         ArgType::Label => {
@@ -561,11 +639,15 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                             } else {
                                 //error
                                 println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be number in range [-8388608..8388607] (0x000000..0xFFFFFF), got {}.", code_line.line_number, code_line.code_parts[0], val);
+
+                                *err = true;
                             }
                         },
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be number or labeled value.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
                 },
@@ -587,6 +669,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 1st argument for {} instruction should be one of the gpr or mpr.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
 
@@ -605,6 +689,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of the gpr or mpr.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
                 },
@@ -627,6 +713,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                                 _ => {
                                     //error
                                     println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of special registers, in case when first one is gpr or mpr.", code_line.line_number, code_line.code_parts[0]);
+
+                                    *err = true;
                                 }
                             }
                         },
@@ -646,6 +734,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                                 _ => {
                                     //error
                                     println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of special registers, in case when first one is gpr or mpr.", code_line.line_number, code_line.code_parts[0]);
+
+                                    *err = true;
                                 }
                             }
                         },
@@ -672,12 +762,16 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                                 _ => {
                                     //error
                                     println!("Arguments ERROR\n on line {}\n 2nd argument for {} instruction should be one of gpr or mpr, in case when first one is special register.", code_line.line_number, code_line.code_parts[0]);
+
+                                    *err = true;
                                 }
                             }
                         }
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n 1st argument for {} instruction should be one of the gpr, mpr or special registers.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
                 },
@@ -693,6 +787,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                             } else {
                                 //error
                                 println!("Arguments ERROR\n on line {}\n argument for {} instruction should be number in range [0..7] (0x0..0x7), got {}.", code_line.line_number, code_line.code_parts[0], val);
+
+                                *err = true;
                             }
                         },
                         ArgType::Label => {
@@ -703,11 +799,15 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                             } else {
                                 //error
                                 println!("Arguments ERROR\n on line {}\n argument for {} instruction should be number in range [0..7] (0x0..0x7), got {}.", code_line.line_number, code_line.code_parts[0], val);
+
+                                *err = true;
                             }
                         },
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n argument for {} instruction should be number or labeled value.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
                 },
@@ -723,6 +823,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                             } else {
                                 //error
                                 println!("Arguments ERROR\n on line {}\n argument for {} instruction should be number in range [0..255] (0x0..0xFF), got {}.", code_line.line_number, code_line.code_parts[0], val);
+
+                                *err = true;
                             }
                         },
                         ArgType::Label => {
@@ -733,11 +835,15 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                             } else {
                                 //error
                                 println!("Arguments ERROR\n on line {}\n argument for {} instruction should be number in range [0..255] (0x0..0xFF), got {}.", code_line.line_number, code_line.code_parts[0], val);
+
+                                *err = true;
                             }
                         },
                         _ => {
                             //error
                             println!("Arguments ERROR\n on line {}\n argument for {} instruction should be number or labeled value.", code_line.line_number, code_line.code_parts[0]);
+
+                            *err = true;
                         }
                     }
                 },
@@ -752,6 +858,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
             // couldn't find the instruction
 
             println!("Error finding instructions\n on line {}\n {} is not an instruction!", code_line.line_number, code_line.code_parts[0]);
+
+            *err = true;
         }
     }
 

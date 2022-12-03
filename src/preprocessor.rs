@@ -131,7 +131,7 @@ use text_line_parser::parse_text_line;
 
 
 
-pub fn first_read(raw_lines: Vec<&str>, labels_table: &mut Vec<Label>) -> Vec<Code> {
+pub fn first_read(raw_lines: Vec<&str>, labels_table: &mut Vec<Label>, err: &mut bool) -> Vec<Code> {
 
     let mut code_table: Vec<Code> = Vec::new();
     let mut address_counter: i32 = 0;
@@ -156,7 +156,8 @@ pub fn first_read(raw_lines: Vec<&str>, labels_table: &mut Vec<Label>) -> Vec<Co
                                 i,
                                 words,
                                 comment_index,
-                                labels_table);
+                                labels_table,
+                                err);
                         },
                         Segment::Text => {
                             address_counter = parse_text_line(
@@ -165,7 +166,8 @@ pub fn first_read(raw_lines: Vec<&str>, labels_table: &mut Vec<Label>) -> Vec<Co
                                 comment_index,
                                 address_counter,
                                 labels_table,
-                                &mut code_line)
+                                &mut code_line,
+                                err)
                         },
                         Segment::Data => {
                             address_counter = parse_data_line(
@@ -174,7 +176,8 @@ pub fn first_read(raw_lines: Vec<&str>, labels_table: &mut Vec<Label>) -> Vec<Co
                                 comment_index,
                                 address_counter,
                                 labels_table,
-                                &mut code_line)
+                                &mut code_line,
+                                err)
                         },
                         _ => {},
                     }

@@ -8,6 +8,7 @@ pub fn parse_data_line(
     prev_address: i32,
     labels_table: &mut Vec<Label>,
     listing_line: &mut Code,
+    err: &mut bool,
 )-> i32 {
     //push found labels to labels table
     //if found variable directive and also variable value, update listing_line
@@ -110,14 +111,15 @@ pub fn parse_data_line(
                 } else {
                     // error
                     println!("\nData segment ERROR:\nOn line {}\n String variables should always be initialized:\n [label:] .strig \"some string value\"", line_number);
+
+                    *err = true;
                 }
             },
             _ => {
                 println!("\nData segment warning:\nOn line {}\n Malformed line, ignored", line_number);
             },
         }
-    }    
-    
+    }
 
     return new_address;
 }

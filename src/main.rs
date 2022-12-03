@@ -17,29 +17,35 @@ use structs::{Code, Label};
 use crate::enums::LineType;
 
 fn main() {
-    let mut file_path_in: String;
+    let file_path_in: String;
     let file_contents: String;
     let mut labels_table: Vec<Label> = Vec::new();
     let mut code_listing: Vec<Code> = Vec::new();
+    let mut err: bool = false;
 
     println!("Enter path to .asm file:");
 
     file_path_in = read_input("couldn't read input");
     
     match fs::read_to_string(&file_path_in) {
-        Err(why) => println!("! {:?}", why.kind()),
+        Err(why) => {
+            println!("! {:?}", why.kind());
+            err = true;
+        },
         Ok(buff) => {
             file_contents = buff;
 
             // first pass
-            code_listing = preprocessor::first_read(file_contents.lines().collect(), &mut labels_table);
+            code_listing = preprocessor::first_read(file_contents.lines().collect(), &mut labels_table, &mut err);
 
             // second pass
-            encode(&mut code_listing, &labels_table);
+            encode(&mut code_listing, &labels_table, &mut err);
         }
     };
 
-    save_files(&code_listing, &labels_table, &file_path_in);
+    if !err {
+        save_files(&code_listing, &labels_table, &file_path_in);
+    }
 }
 
 fn save_files(code_listing: &Vec<Code>, labels_table: &Vec<Label>, file_path: &str) {
