@@ -10,21 +10,23 @@ mod preprocessor;
 mod encoder;
 
 // declaring functionality of used modules
-// use helpers::{read_input, number_parser};
+use helpers::read_input;
 use encoder::encode;
 use structs::{Code, Label};
 
 use crate::enums::LineType;
 
 fn main() {
-    let file_path_in: String;
+    let mut file_path_in: String;
     let file_contents: String;
     let mut labels_table: Vec<Label> = Vec::new();
     let mut code_listing: Vec<Code> = Vec::new();
 
-    file_path_in = String::from("test/test.asm");
+    println!("Enter path to .asm file:");
+
+    file_path_in = read_input("couldn't read input");
     
-    match fs::read_to_string(file_path_in) {
+    match fs::read_to_string(&file_path_in) {
         Err(why) => println!("! {:?}", why.kind()),
         Ok(buff) => {
             file_contents = buff;
@@ -37,11 +39,20 @@ fn main() {
         }
     };
 
-    save_files(&code_listing, &labels_table);
+    save_files(&code_listing, &labels_table, &file_path_in);
 }
 
-fn save_files(code_listing: &Vec<Code>, labels_table: &Vec<Label>) {
-    let path = path::Path::new("test/test.list");
+fn save_files(code_listing: &Vec<Code>, labels_table: &Vec<Label>, file_path: &str) {
+    let path_root_parts: Vec<&str> = file_path.split(".").collect();
+    let path_root: String = String::from(path_root_parts[0]);
+    
+    let mut path_to_list: String = path_root.clone();
+    path_to_list.push_str(".list");
+
+    let mut path_to_hex: String = path_root.clone();
+    path_to_hex.push_str(".hex");
+
+    let path = path::Path::new(&path_to_list);
     let display = path.display();
 
     let mut file = match fs::File::create(&path) {
@@ -54,7 +65,7 @@ fn save_files(code_listing: &Vec<Code>, labels_table: &Vec<Label>) {
         Ok(_) => println!("successfully wrote to {}", display),
     }
 
-    let path = path::Path::new("test/test.hex");
+    let path = path::Path::new(&path_to_hex);
     let display = path.display();
 
     let mut file = match fs::File::create(&path) {
@@ -107,7 +118,7 @@ fn collate_listing(code_listing: &Vec<Code>, labels_table: &Vec<Label>) -> Strin
         if code_listing[i].machine_code.len() > 1 {
             for j in 1..code_listing[i].machine_code.len() {
                 machine_code = format!("{:04X}", code_listing[i].machine_code[j]);
-                address = format!("{:04X}", (code_listing[i].address + (j as i32) * 2));
+                address = format!("{:04X} {:04X}", ((code_listing[i].address + (j as i32) * 2) >> 16), (code_listing[i].address + (j as i32) * 2));
 
                 list_output.push_str(&format!("\n{:8}{:12}{:8}", "", address, machine_code));
             }
