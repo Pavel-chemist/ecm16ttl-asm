@@ -652,7 +652,8 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         ArgType::Special => {
                             code_line.machine_code[0] = 
                                 code_line.machine_code[0] |
-                                (args[0].get_val() as u16);
+                                (args[0].get_val() as u16) |
+                                0x0004; // set "write special" bit
 
                             match args[1].get_type() {
                                 ArgType::Gpr => {
