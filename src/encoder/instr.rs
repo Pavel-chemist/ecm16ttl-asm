@@ -472,7 +472,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                             // As PC is always updating, and label is most probably an absolute address,
                             // the offset is calculated here
 
-                            let offset: i32 = (args[2].get_val() as i32) - (code_line.address + 2);
+                            let offset: i32 = (args[2].get_val() as i32) - (code_line.address + 4);
                             code_line.machine_code.push(offset as u16);
                         },
                         _ => {
@@ -486,7 +486,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
 
                     match args[0].get_type() {
                         ArgType::Label => {
-                            let offset: i32 = (args[0].get_val() as i32) - (code_line.address + 2);
+                            let offset: i32 = (args[0].get_val() as i32) - (code_line.address + 4);
 
                             code_line.machine_code[0] = code_line.machine_code[0] | (((offset >> 16) as u16) & 0x00FF);
                             code_line.machine_code.push(offset as u16);
