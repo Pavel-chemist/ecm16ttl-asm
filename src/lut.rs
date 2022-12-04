@@ -4,6 +4,7 @@ use crate::enums::InstrType;
 
 pub fn get_instr_table() -> HashMap<&'static str, InstrDescr> {
     let instr_table: HashMap<&str, InstrDescr> = HashMap::from([
+        // alu
         ("ADD", {InstrDescr {itype: InstrType::Alu, args: 3, bytes: 2, base_word: 0x8000}}),
         ("SUB", {InstrDescr {itype: InstrType::Alu, args: 3, bytes: 2, base_word: 0x9000}}),
         ("AND", {InstrDescr {itype: InstrType::Alu, args: 3, bytes: 2, base_word: 0xA000}}),
@@ -38,6 +39,7 @@ pub fn get_instr_table() -> HashMap<&'static str, InstrDescr> {
         ("ROTi", {InstrDescr {itype: InstrType::AluRot, args: 3, bytes: 2, base_word: 0xD010}}),
         ("BSE", {InstrDescr {itype: InstrType::AluOneSrc, args: 2, bytes: 2, base_word: 0x8010}}),
         ("INV", {InstrDescr {itype: InstrType::AluOneSrc, args: 2, bytes: 2, base_word: 0xE010}}),
+        // mem
         ("LDir", {InstrDescr {itype: InstrType::MemIgpr, args: 2, bytes: 4, base_word: 0x2000}}),
         ("LDim", {InstrDescr {itype: InstrType::MemImp, args: 2, bytes: 4, base_word: 0x2800}}),
         ("LDd", {InstrDescr {itype: InstrType::MemDirect, args: 2, bytes: 4, base_word: 0x4000}}),
@@ -56,6 +58,7 @@ pub fn get_instr_table() -> HashMap<&'static str, InstrDescr> {
         ("STrb", {InstrDescr {itype: InstrType::MemRo, args: 3, bytes: 2, base_word: 0x7018}}),
         ("LDob", {InstrDescr {itype: InstrType::MemIo, args: 3, bytes: 4, base_word: 0x601C}}),
         ("STob", {InstrDescr {itype: InstrType::MemIo, args: 3, bytes: 4, base_word: 0x701C}}),
+        // jumps
         ("J", {InstrDescr {itype: InstrType::Jmp, args: 1, bytes: 4, base_word: 0x1000}}),
         ("JZ", {InstrDescr {itype: InstrType::Jmp, args: 1, bytes: 4, base_word: 0x1100}}),
         ("JN", {InstrDescr {itype: InstrType::Jmp, args: 1, bytes: 4, base_word: 0x1200}}),        
@@ -66,10 +69,13 @@ pub fn get_instr_table() -> HashMap<&'static str, InstrDescr> {
         ("JNO", {InstrDescr {itype: InstrType::Jmp, args: 1, bytes: 4, base_word: 0x1B00}}),
         ("JNC", {InstrDescr {itype: InstrType::Jmp, args: 1, bytes: 4, base_word: 0x1700}}),
         ("JSR", {InstrDescr {itype: InstrType::Jmp, args: 1, bytes: 4, base_word: 0x1F00}}),
+        // address arithm
         ("ADDp", {InstrDescr {itype: InstrType::AddrArithm, args: 2, bytes: 2, base_word: 0x0800}}),
         ("ADDpi", {InstrDescr {itype: InstrType::AddrArImm, args: 2, bytes: 4, base_word: 0x0900}}),
+        // mov
         ("MOV", {InstrDescr {itype: InstrType::Mov, args: 2, bytes: 2, base_word: 0x3000}}),
         ("MOVs", {InstrDescr {itype: InstrType::Movs, args: 2, bytes: 2, base_word: 0x3008}}),
+        // misc
         ("SETIM", {InstrDescr {itype: InstrType::Misc3bit, args: 1, bytes: 2, base_word: 0x0700}}),
         ("CLRIM", {InstrDescr {itype: InstrType::Misc3bit, args: 1, bytes: 2, base_word: 0x0600}}),
         ("SETPR", {InstrDescr {itype: InstrType::Misc3bit, args: 1, bytes: 2, base_word: 0x0500}}),

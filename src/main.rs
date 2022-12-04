@@ -92,7 +92,7 @@ fn collate_listing(code_listing: &Vec<Code>, labels_table: &Vec<Label>) -> Strin
     list_output.push_str(&format!("Found labels:\n\n{:20}{:16}{:16}", "label:", "hex value:", "decimal value:\n"));
 
     for i in 0..labels_table.len() {
-        list_output.push_str(&format!("\n{:20}0x{:08X}{:6}{}\n", labels_table[i].label, labels_table[i].address, "", labels_table[i].address));
+        list_output.push_str(&format!("\n{:20}0x{:08X}{:6}{}", labels_table[i].label, labels_table[i].address, "", labels_table[i].address));
     }
 
     list_output.push_str("\n--------------------------------------------------------------------------------\n");
