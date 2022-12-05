@@ -87,9 +87,9 @@ impl NumParseRes {
         self.num_val = num;
     }
 
-    pub fn toggle_error_messaging(&mut self) {
+    /* pub fn toggle_error_messaging(&mut self) {
         self.show_err = true;
-    }
+    } */
 
     pub fn clear(&mut self) {
         self.is_num = false;

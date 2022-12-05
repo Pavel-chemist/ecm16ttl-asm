@@ -30,10 +30,24 @@ pub fn parse_text_line(
                 new_found_label.push(code_line[0].chars().nth(i).unwrap());
         }
 
-        labels_table.push(Label::new(new_found_label, prev_address + (prev_address & 0x1)));
+        for i in 0..labels_table.len() {
+            if labels_table[i].label == new_found_label {
+                // error
+                println!("\nText segment ERROR\nOn line {}\nLabel \"{}\" is not unique!.", line_number, new_found_label);
+
+                *err = true;
+                break;
+            }
+        }
+
+        if !*err {
+            labels_table.push(Label::new(new_found_label, prev_address + (prev_address & 0x1)));
+        }
+        
     }
 
     // here, the prefix Aliases should be checked
+
     if instr_index < code_length {
         match instr_lut.get(code_line[instr_index]) {
             Some(instr) => {

@@ -1,4 +1,4 @@
-use crate::structs::Label;
+use crate::structs::{Label, NumParseRes};
 use crate::helpers::number_parser;
 
 pub fn parse_constants_line(
@@ -14,13 +14,32 @@ pub fn parse_constants_line(
 
         *err = true;
     } else {
-        let value: i32 = number_parser(code_line[2]).get().unwrap_or(0) as i32;
+        let value: NumParseRes = number_parser(code_line[2]);
 
-        if code_line[1] == "=" {
-            let const_name: String = String::from(code_line[0]);
-            labels_table.push(Label::new(const_name, value));
+        if value.is_num() {
+            if code_line[1] == "=" {
+                let const_name: String = String::from(code_line[0]);
+
+                for i in 0..labels_table.len() {
+                    if labels_table[i].label == const_name {
+                        // error
+                        println!("\nConstants segment ERROR\nOn line {}\nLabel \"{}\" is not unique!.", line_number, const_name);
+        
+                        *err = true;
+                        break;
+                    }
+                }
+        
+                if !*err {
+                    labels_table.push(Label::new(const_name, value.get().unwrap() as i32));
+                }
+            } else {
+                println!("\nConstants segment ERROR:\nOn line {}\nAssignment of value should be done with '=' character.\n expected to look like this:\n const_name = <numeric_value>", line_number);
+
+                *err = true;
+            }
         } else {
-            println!("\nConstants segment error:\nOn line {}\nAssignment of value should be done with '=' character.\n expected to look like this:\n const_name = <numeric_value>", line_number);
+            println!("\nConstants segment ERROR:\nOn line {}\nValue to the right of '=' should be a number.\ngot \"{}\"", line_number, code_line[2]);
 
             *err = true;
         }

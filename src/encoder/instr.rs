@@ -19,7 +19,7 @@ pub fn encode_instruction(code_line: &mut Code, labels_map: &HashMap<String, i32
                         argument_value.update_val(val.clone() as i64);
                     },
                     None => {
-                        println!("Error parsing arguments!\n on line {}\n For {} instruction: \n argument #{} is {}, which is not a register name, nor in the list of known labels!", code_line.line_number, code_line.code_parts[0], i, code_line.code_parts[i]);
+                        println!("Error parsing arguments!\n on line {}\n For {} instruction: \n argument #{} is {}, which is not a register name and not a number, nor in the list of known labels!", code_line.line_number, code_line.code_parts[0], i, code_line.code_parts[i]);
 
                         *err = true;
                         break;

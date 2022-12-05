@@ -25,7 +25,19 @@ pub fn parse_data_line(
             new_found_label.push(code_line[0].chars().nth(i).unwrap());
         }
 
-        labels_table.push(Label::new(new_found_label, prev_address + (prev_address & 0x1)));
+        for i in 0..labels_table.len() {
+            if labels_table[i].label == new_found_label {
+                // error
+                println!("\nData segment ERROR\nOn line {}\nLabel \"{}\" is not unique!.", line_number, new_found_label);
+
+                *err = true;
+                break;
+            }
+        }
+
+        if !*err {
+            labels_table.push(Label::new(new_found_label, prev_address + (prev_address & 0x1)));
+        }
     }
 
     if size_directive_index < code_length {
@@ -37,7 +49,7 @@ pub fn parse_data_line(
                 listing_line.address = prev_address + (prev_address & 0x1);
                 listing_line.var_type = VarType::Word;
     
-                if code_line.len() > size_directive_index {
+                if code_length > size_directive_index + 1 {
                     listing_line.code_parts.push(String::from(code_line[size_directive_index + 1]));
                 } else {
                     listing_line.code_parts.push(String::from("0x0000"));
@@ -50,7 +62,7 @@ pub fn parse_data_line(
                 listing_line.address = prev_address + (prev_address & 0x1);
                 listing_line.var_type = VarType::Dword;
     
-                if code_line.len() > size_directive_index {
+                if code_length > size_directive_index + 1 {
                     listing_line.code_parts.push(String::from(code_line[size_directive_index + 1]));
                 } else {
                     listing_line.code_parts.push(String::from("0x00000000"));
@@ -63,7 +75,7 @@ pub fn parse_data_line(
                 listing_line.address = prev_address + (prev_address & 0x1);
                 listing_line.var_type = VarType::Long;
     
-                if code_line.len() > size_directive_index {
+                if code_length > size_directive_index + 1 {
                     listing_line.code_parts.push(String::from(code_line[size_directive_index + 1]));
                 } else {
                     listing_line.code_parts.push(String::from("0"));
@@ -75,7 +87,7 @@ pub fn parse_data_line(
                 let mut string_proper: bool = false;
                 let mut string_length: i32 = 0;
 
-                if code_line.len() > size_directive_index {
+                if code_length > size_directive_index + 1 {
 
                     let string_part: String = String::from(listing_line.original_line.clone());
 
@@ -116,7 +128,9 @@ pub fn parse_data_line(
                 }
             },
             _ => {
-                println!("\nData segment warning:\nOn line {}\n Malformed line, ignored", line_number);
+                println!("\nData segment ERROR:\nOn line {}\n Variable should always have size directive,\n one of '.word', '.dword', '.long' or '.string'.\n got '{}'", line_number, code_line[size_directive_index]);
+
+                *err = true;
             },
         }
     }
